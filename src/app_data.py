@@ -20,7 +20,7 @@ SERIES_KEYS = ["item_id", "dc_id"]
 SCENARIO_ORDER = [
     "baseline", "baseline_fair_share", "demand_surge", "supplier_disruption",
     "lead_time_shock_policy_not_updated", "lead_time_shock_policy_updated", "flat_service_level",
-    "diagnostic_unlimited_supply",
+    "diagnostic_unlimited_supply", "price_cut_policy_not_updated", "price_cut_policy_updated",
 ]
 
 
@@ -51,7 +51,7 @@ def write_app_data(cfg: dict) -> dict:
         app / "segment_sets.csv", index=False)
     for name in ("backtest_scores.csv", "model_selection.csv", "allocation_demo.csv", "sim_kpis.csv", "feature_importance.csv"):
         pd.read_csv(out / name).to_csv(app / name, index=False)
-    for name in ("exceptions.csv",):  # stretch outputs: copied when their stage has run
+    for name in ("exceptions.csv", "elasticity.csv"):  # stretch outputs: copied when their stage has run
         if (out / name).exists():
             pd.read_csv(out / name).to_csv(app / name, index=False)
 
@@ -155,9 +155,11 @@ def write_results(cfg: dict, meta: dict) -> str:
 
     overall_k = kpis[kpis["group"] == "All"]
     table = overall_k.pivot(index="scenario", columns="kpi", values="mean").reindex(SCENARIO_ORDER)
-    table = table[["fill_rate", "cycle_service", "stockout_weeks", "avg_inventory_value", "holding_cost", "lost_sales_value", "days_of_cover"]]
-    band = overall_k[overall_k["kpi"] == "fill_rate"].set_index("scenario").reindex(SCENARIO_ORDER)
-    money = ["avg_inventory_value", "holding_cost", "lost_sales_value"]
+    table = table.dropna(how="all")
+    table = table[["fill_rate", "cycle_service", "stockout_weeks", "avg_inventory_value", "holding_cost", "lost_sales_value",
+                   "days_of_cover", "revenue"]]
+    band = overall_k[overall_k["kpi"] == "fill_rate"].set_index("scenario").reindex(table.index)
+    money = ["avg_inventory_value", "holding_cost", "lost_sales_value", "revenue"]
     table[money] = table[money].round(0).astype("int64")
     table.insert(1, "fill_rate_p10", band["p10"])
     table.insert(2, "fill_rate_p90", band["p90"])
@@ -166,9 +168,9 @@ def write_results(cfg: dict, meta: dict) -> str:
               "Values are in US dollars at M5 shelf prices; unit cost is 60% of price and holding cost 25% of cost per year (simulated).", "",
               "`diagnostic_unlimited_supply` is not one of the specified scenarios; it removes the supplier capacity limit to separate "
               "the policy's own performance from the capacity effect.", ""]
-    fill_groups = kpis[kpis["kpi"] == "fill_rate"].pivot(index="scenario", columns="group", values="mean").reindex(SCENARIO_ORDER).reset_index()
+    fill_groups = kpis[kpis["kpi"] == "fill_rate"].pivot(index="scenario", columns="group", values="mean").reindex(table.index).reset_index()
     parts += ["Fill rate by group (model_naive and model_lightgbm group series by their chosen forecasting model):", "", _md_table(fill_groups), ""]
-    binding = pd.read_csv(out / "sim_supply_binding.csv").set_index("scenario").reindex(SCENARIO_ORDER).reset_index()
+    binding = pd.read_csv(out / "sim_supply_binding.csv").set_index("scenario").reindex(table.index).reset_index()
     parts += ["Share of item-weeks in which DC requests exceeded the item's supplier capacity:", "", _md_table(binding), ""]
     if (out / "exceptions.csv").exists():
         exc = pd.read_csv(out / "exceptions.csv")
@@ -179,6 +181,19 @@ def write_results(cfg: dict, meta: dict) -> str:
         parts += ["## Planner exceptions (stretch)", "", "Command: `python run_all.py --stage exceptions`", "", _md_table(summary), "",
                   f"Series with at least one exception: {exc[SERIES_KEYS].drop_duplicates().shape[0]}. Top 10 by value at risk (USD):", "",
                   _md_table(top), ""]
+    if (out / "elasticity.csv").exists():
+        el = pd.read_csv(out / "elasticity.csv")
+        ok = el[el["status"] == "ok"]
+        stats = pd.DataFrame([
+            ["Items", len(el)], ["Status ok / insufficient variation", f"{len(ok)} / {int((el['status'] == 'insufficient_variation').sum())}"],
+            ["Department mean (raw)", f"{el['e_dept'].iloc[0]:.3f}"], ["Raw estimate median (ok items)", f"{ok['e_raw'].median():.3f}"],
+            ["Raw estimates with a positive sign (flagged)", int(el["raw_positive"].sum())],
+            ["Positive with a time trend added (sensitivity only)", int((ok["e_raw_with_trend"] > 0).sum())],
+            ["Final elasticity median / mean", f"{el['elasticity'].median():.3f} / {el['elasticity'].mean():.3f}"],
+        ], columns=["Measure", "Value"])
+        parts += ["## Price elasticity and price cut (stretch)", "", "Command: `python run_all.py --stage elasticity` and "
+                  "`python run_all.py --stage simulate` (scenarios price_cut_policy_not_updated and price_cut_policy_updated above)", "",
+                  _md_table(stats), ""]
     text = "\n".join(parts)
     (PROJECT_ROOT / "RESULTS.md").write_text(text, encoding="utf-8")
     return text

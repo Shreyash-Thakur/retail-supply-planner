@@ -97,3 +97,14 @@ def test_residual_pools_fall_back_to_scaled_pattern_pool():
     assert np.array_equal(pools[0][0], np.full(4, 2.0))
     # I2 has only 2 residuals in h 1 to 4: pooled smooth residuals scaled by 30 / mean(10, 30) = 1.5
     assert pools[1][0] == pytest.approx(np.array([2.0] * 4 + [99.0, 99.0]) * 1.5)
+
+
+def test_price_multiplier_scales_revenue_and_lost_value_only():
+    inputs = make_inputs()
+    results = simulate(inputs, np.zeros((2, 2, 3, H)), Scenario("t"), ABC_WEIGHT)
+    base = run_kpis(results, inputs)
+    cut = run_kpis(results, inputs, price_multiplier=np.array([0.9, 1.0]))
+    revenue_item1 = (results["sold"][:, :, 0, :].sum(axis=(1, 2)) * inputs.unit_price[0])
+    all_base, all_cut = base[base["group"] == "All"], cut[cut["group"] == "All"]
+    np.testing.assert_allclose(all_base["revenue"].to_numpy() - all_cut["revenue"].to_numpy(), 0.1 * revenue_item1)
+    np.testing.assert_allclose(all_base["fill_rate"], all_cut["fill_rate"])

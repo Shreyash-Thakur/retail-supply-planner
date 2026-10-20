@@ -112,16 +112,18 @@ Simulated fill rate over 12 weeks (mean of 200 runs):
 
 Command: `python run_all.py --stage simulate`
 
-| scenario | fill_rate | fill_rate_p10 | fill_rate_p90 | cycle_service | stockout_weeks | avg_inventory_value | holding_cost | lost_sales_value | days_of_cover |
-|---|---|---|---|---|---|---|---|---|---|
-| baseline | 0.924 | 0.919 | 0.927 | 0.885 | 1.382 | 140,206 | 8,089 | 201,771 | 10.652 |
-| baseline_fair_share | 0.938 | 0.935 | 0.942 | 0.882 | 1.413 | 134,146 | 7,739 | 176,876 | 10.158 |
-| demand_surge | 0.914 | 0.911 | 0.918 | 0.871 | 1.551 | 130,463 | 7,527 | 224,473 | 9.765 |
-| supplier_disruption | 0.845 | 0.841 | 0.849 | 0.784 | 2.593 | 119,023 | 6,867 | 343,640 | 9.146 |
-| lead_time_shock_policy_not_updated | 0.794 | 0.789 | 0.798 | 0.657 | 4.116 | 87,823 | 5,067 | 422,418 | 6.859 |
-| lead_time_shock_policy_updated | 0.865 | 0.861 | 0.870 | 0.805 | 2.337 | 126,698 | 7,310 | 312,423 | 9.875 |
-| flat_service_level | 0.925 | 0.920 | 0.928 | 0.890 | 1.325 | 141,889 | 8,186 | 200,838 | 10.906 |
-| diagnostic_unlimited_supply | 0.994 | 0.993 | 0.995 | 0.982 | 0.216 | 165,701 | 9,560 | 15,121 | 12.180 |
+| scenario | fill_rate | fill_rate_p10 | fill_rate_p90 | cycle_service | stockout_weeks | avg_inventory_value | holding_cost | lost_sales_value | days_of_cover | revenue |
+|---|---|---|---|---|---|---|---|---|---|---|
+| baseline | 0.924 | 0.919 | 0.927 | 0.885 | 1.382 | 140,206 | 8,089 | 201,771 | 10.652 | 1,700,850 |
+| baseline_fair_share | 0.938 | 0.935 | 0.942 | 0.882 | 1.413 | 134,146 | 7,739 | 176,876 | 10.158 | 1,725,746 |
+| demand_surge | 0.914 | 0.911 | 0.918 | 0.871 | 1.551 | 130,463 | 7,527 | 224,473 | 9.765 | 1,729,129 |
+| supplier_disruption | 0.845 | 0.841 | 0.849 | 0.784 | 2.593 | 119,023 | 6,867 | 343,640 | 9.146 | 1,558,981 |
+| lead_time_shock_policy_not_updated | 0.794 | 0.789 | 0.798 | 0.657 | 4.116 | 87,823 | 5,067 | 422,418 | 6.859 | 1,480,203 |
+| lead_time_shock_policy_updated | 0.865 | 0.861 | 0.870 | 0.805 | 2.337 | 126,698 | 7,310 | 312,423 | 9.875 | 1,590,199 |
+| flat_service_level | 0.925 | 0.920 | 0.928 | 0.890 | 1.325 | 141,889 | 8,186 | 200,838 | 10.906 | 1,701,783 |
+| diagnostic_unlimited_supply | 0.994 | 0.993 | 0.995 | 0.982 | 0.216 | 165,701 | 9,560 | 15,121 | 12.180 | 1,887,500 |
+| price_cut_policy_not_updated | 0.909 | 0.905 | 0.913 | 0.879 | 1.456 | 133,027 | 7,675 | 225,142 | 9.821 | 1,670,210 |
+| price_cut_policy_updated | 0.914 | 0.911 | 0.918 | 0.881 | 1.426 | 136,843 | 7,895 | 217,182 | 10.085 | 1,678,170 |
 
 Values are in US dollars at M5 shelf prices; unit cost is 60% of price and holding cost 25% of cost per year (simulated).
 
@@ -139,6 +141,8 @@ Fill rate by group (model_naive and model_lightgbm group series by their chosen 
 | lead_time_shock_policy_updated | 0.886 | 0.865 | 0.813 | 0.816 | 0.895 | 0.566 |
 | flat_service_level | 0.937 | 0.925 | 0.902 | 0.883 | 0.951 | 0.651 |
 | diagnostic_unlimited_supply | 0.995 | 0.994 | 0.992 | 0.987 | 0.997 | 0.966 |
+| price_cut_policy_not_updated | 0.917 | 0.909 | 0.900 | 0.877 | 0.934 | 0.651 |
+| price_cut_policy_updated | 0.924 | 0.914 | 0.900 | 0.877 | 0.939 | 0.651 |
 
 Share of item-weeks in which DC requests exceeded the item's supplier capacity:
 
@@ -152,6 +156,8 @@ Share of item-weeks in which DC requests exceeded the item's supplier capacity:
 | lead_time_shock_policy_updated | 0.789 |
 | flat_service_level | 0.607 |
 | diagnostic_unlimited_supply | 0.000 |
+| price_cut_policy_not_updated | 0.605 |
+| price_cut_policy_updated | 0.607 |
 
 ## Planner exceptions (stretch)
 
@@ -178,3 +184,17 @@ Series with at least one exception: 226. Top 10 by value at risk (USD):
 | 8 | FOODS_3_362 | WI | A | forecast_bias | 6,215 | bias -100% over the last fold (0 forecast vs 2486 actual) |
 | 9 | FOODS_3_362 | TX | A | forecast_bias | 5,352 | bias -100% over the last fold (0 forecast vs 2141 actual) |
 | 10 | FOODS_3_499 | CA | A | forecast_bias | 4,705 | bias +44% over the last fold (6146 forecast vs 4264 actual) |
+
+## Price elasticity and price cut (stretch)
+
+Command: `python run_all.py --stage elasticity` and `python run_all.py --stage simulate` (scenarios price_cut_policy_not_updated and price_cut_policy_updated above)
+
+| Measure | Value |
+|---|---|
+| Items | 150 |
+| Status ok / insufficient variation | 108 / 42 |
+| Department mean (raw) | -0.111 |
+| Raw estimate median (ok items) | -0.629 |
+| Raw estimates with a positive sign (flagged) | 40 |
+| Positive with a time trend added (sensitivity only) | 43 |
+| Final elasticity median / mean | -0.111 / -0.829 |

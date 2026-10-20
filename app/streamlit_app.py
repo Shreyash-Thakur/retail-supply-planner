@@ -22,6 +22,8 @@ SCENARIO_LABELS = {
     "lead_time_shock_policy_updated": "Lead time +2 weeks, policy updated",
     "flat_service_level": "Flat 98% service level for every series",
     "diagnostic_unlimited_supply": "Diagnostic: unlimited supplier capacity",
+    "price_cut_policy_not_updated": "Price cut 10% on top 10 items, policy not updated",
+    "price_cut_policy_updated": "Price cut 10% on top 10 items, policy updated",
 }
 
 st.set_page_config(page_title="Retail Supply Planner", layout="wide")
@@ -84,7 +86,8 @@ if page == "Overview":
         f"{meta['simulation_runs']} Monte Carlo runs test the policy over the {meta['horizon_weeks']} weeks after the data ends."
     )
     kpis = data["sim_kpis"]
-    scenario = st.selectbox("Scenario", list(SCENARIO_LABELS), format_func=SCENARIO_LABELS.get)
+    available = [s for s in SCENARIO_LABELS if s in set(data["sim_kpis"]["scenario"])]
+    scenario = st.selectbox("Scenario", available, format_func=SCENARIO_LABELS.get)
     cols = st.columns(4)
     for col, (kpi, label, fmt) in zip(cols, [
         ("fill_rate", "Fill rate", "{:.1%}"), ("cycle_service", "Cycle service", "{:.1%}"),
@@ -241,10 +244,11 @@ elif page == "Allocation":
 elif page == "Scenarios":
     st.title("Scenarios")
     kpis, weekly = data["sim_kpis"], data["sim_weekly"]
-    scenario = st.selectbox("Scenario", [s for s in SCENARIO_LABELS if s != "baseline"], format_func=SCENARIO_LABELS.get)
+    scenario = st.selectbox("Scenario", [s for s in SCENARIO_LABELS if s != "baseline" and s in set(kpis["scenario"])],
+                            format_func=SCENARIO_LABELS.get)
     group = st.radio("Series", ["All", "A", "B", "C"], horizontal=True)
     formats = {"fill_rate": "{:.1%}", "cycle_service": "{:.1%}", "stockout_weeks": "{:.2f}", "avg_inventory_value": "{:,.0f}",
-               "holding_cost": "{:,.0f}", "lost_sales_value": "{:,.0f}", "days_of_cover": "{:.1f}"}
+               "holding_cost": "{:,.0f}", "lost_sales_value": "{:,.0f}", "days_of_cover": "{:.1f}", "revenue": "{:,.0f}"}
     rows = []
     for kpi, fmt in formats.items():
         sc, b = kpi_value(kpis, scenario, kpi, group), kpi_value(kpis, "baseline", kpi, group)

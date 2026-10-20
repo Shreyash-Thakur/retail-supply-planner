@@ -63,6 +63,12 @@ allocation:
   abc_weight: {A: 3.0, B: 2.0, C: 1.0}
   cover_basis: position
 
+elasticity:
+  min_distinct_prices: 3
+  min_price_cv: 0.02
+  shrinkage_weeks: 20
+  clip: [-4.0, 0.0]
+
 exceptions:
   stockout_weeks: 4
   overstock_days: 60
@@ -79,3 +85,4 @@ scenarios:
   supplier_disruption: {capacity_factor: 0.50, start_week: 3, duration_weeks: 3}
   lead_time_shock: {extra_weeks: 2}
   flat_service_level: {service_level: 0.98}
+  price_cut: {price_factor: 0.90, top_n_items_by_revenue: 10}

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 SERIES_KEYS = ["item_id", "dc_id"]
 KPIS = ["fill_rate", "cycle_service", "stockout_weeks", "avg_inventory_units", "avg_inventory_value",
-        "holding_cost", "lost_sales_value", "days_of_cover"]
+        "holding_cost", "lost_sales_value", "days_of_cover", "revenue"]
 
 
 @dataclass(frozen=True)
@@ -53,6 +53,7 @@ class Scenario:
     extra_lead_weeks: int = 0
     order_up_to: np.ndarray | None = None  # replaces the baseline policy
     method: str = "lp"
+    price_multiplier: np.ndarray | None = None  # (I,) selling price relative to the baseline price
 
 
 def residual_pools(residuals: pd.DataFrame, series: pd.DataFrame, horizon_groups: list[int], min_n: int) -> list[list[np.ndarray]]:
@@ -156,11 +157,15 @@ def _group_masks(inputs: SimInputs) -> dict[str, np.ndarray]:
     return masks | inputs.groups
 
 
-def run_kpis(results: dict[str, np.ndarray], inputs: SimInputs) -> pd.DataFrame:
-    """Per run and group (All, A, B, C and any extra groups): the KPIs in KPIS."""
+def run_kpis(results: dict[str, np.ndarray], inputs: SimInputs, price_multiplier: np.ndarray | None = None) -> pd.DataFrame:
+    """Per run and group (All, A, B, C and any extra groups): the KPIs in KPIS.
+
+    Revenue and lost sales are valued at the selling price, which a price scenario changes via price_multiplier.
+    """
     horizon = results["demand"].shape[1]
     cost = np.broadcast_to(inputs.unit_cost[:, None], inputs.abc.shape)
-    price = np.broadcast_to(inputs.unit_price[:, None], inputs.abc.shape)
+    selling = inputs.unit_price * (1.0 if price_multiplier is None else price_multiplier)
+    price = np.broadcast_to(selling[:, None], inputs.abc.shape)
     holding = np.broadcast_to(inputs.weekly_holding_cost[:, None], inputs.abc.shape)
     frames = []
     for group, mask in _group_masks(inputs).items():
@@ -180,6 +185,7 @@ def run_kpis(results: dict[str, np.ndarray], inputs: SimInputs) -> pd.DataFrame:
             "holding_cost": (oh * holding[mask]).sum(axis=(1, 2)),
             "lost_sales_value": (lost * price[mask]).sum(axis=(1, 2)),
             "days_of_cover": np.divide(inv_units * 7, demand_total / horizon, out=np.full(len(inv_units), np.nan), where=demand_total > 0),
+            "revenue": (s * price[mask]).sum(axis=(1, 2)),
         }))
     return pd.concat(frames, ignore_index=True)
 
@@ -237,7 +243,22 @@ def build_inputs(policy: pd.DataFrame, final_forecast: pd.DataFrame, supply: pd.
     )
 
 
-def build_scenarios(inputs: SimInputs, cfg: dict, policies: dict[str, pd.DataFrame]) -> list[Scenario]:
+def price_cut_inputs(final_forecast: pd.DataFrame, final_segments: pd.DataFrame, elasticity: pd.DataFrame,
+                     cfg: dict) -> tuple[list[str], pd.Series, pd.DataFrame]:
+    """Items to cut (top N by revenue), their demand multipliers price_factor ** elasticity, and the forecast scaled by them."""
+    pc = cfg["scenarios"]["price_cut"]
+    revenue = final_segments.groupby("item_id")["revenue"].sum().sort_values(ascending=False)
+    cut = sorted(revenue.index[: pc["top_n_items_by_revenue"]])
+    multiplier = (pc["price_factor"] ** elasticity.set_index("item_id")["elasticity"]).reindex(cut)
+    scaled = final_forecast.copy()
+    factor = scaled["item_id"].map(multiplier).fillna(1.0)
+    for col in ["forecast"] + [c for c in scaled.columns if c.startswith("q") and c[1:].isdigit()]:
+        scaled[col] = scaled[col] * factor
+    return cut, multiplier, scaled
+
+
+def build_scenarios(inputs: SimInputs, cfg: dict, policies: dict[str, pd.DataFrame],
+                    price_cut: tuple[list[str], pd.Series] | None = None) -> list[Scenario]:
     horizon = inputs.forecast.shape[-1]
     sc = cfg["scenarios"]
 
@@ -267,6 +288,24 @@ def build_scenarios(inputs: SimInputs, cfg: dict, policies: dict[str, pd.DataFra
         Scenario("flat_service_level", order_up_to=oup("flat_service_level")),
         # Diagnostic, not a spec scenario: separates the policy's effect from the supplier capacity limit.
         Scenario("diagnostic_unlimited_supply", capacity_factor=np.full(horizon, 1000.0)),
+    ] + _price_cut_scenarios(inputs, cfg, policies, price_cut)
+
+
+def _price_cut_scenarios(inputs: SimInputs, cfg: dict, policies: dict, price_cut) -> list[Scenario]:
+    """Stretch: a price cut on chosen items, with the policy left as is and with the policy updated for the uplift."""
+    if price_cut is None:
+        return []
+    cut, multiplier = price_cut
+    horizon = inputs.forecast.shape[-1]
+    rows = np.isin(inputs.item_ids, cut)
+    item_mult = np.ones(len(inputs.item_ids))
+    item_mult[rows] = multiplier.reindex(np.array(inputs.item_ids)[rows]).to_numpy()
+    demand = np.broadcast_to(item_mult[None, :, None], (horizon, *inputs.abc.shape)).copy()
+    prices = np.where(rows, cfg["scenarios"]["price_cut"]["price_factor"], 1.0)
+    updated = _grid(policies["price_cut"], "order_up_to", inputs.item_ids, inputs.dc_ids).astype(float)
+    return [
+        Scenario("price_cut_policy_not_updated", demand_multiplier=demand, price_multiplier=prices),
+        Scenario("price_cut_policy_updated", demand_multiplier=demand, price_multiplier=prices, order_up_to=updated),
     ]
 
 
@@ -292,6 +331,16 @@ def run(cfg: dict) -> None:
         "flat_service_level": compute_policy(final_forecast, sigma, supply, items, cfg,
                                              service_level=cfg["scenarios"]["flat_service_level"]["service_level"]),
     }
+    price_cut = None
+    if (out_dir / "elasticity.csv").exists():
+        segments = pd.read_parquet(paths["gold_dir"] / "segments.parquet")
+        cut, multiplier, scaled = price_cut_inputs(final_forecast, segments[segments["segment_set"] == "final"],
+                                                   pd.read_csv(out_dir / "elasticity.csv"), cfg)
+        policies["price_cut"] = compute_policy(scaled, sigma, supply, items, cfg)
+        price_cut = (cut, multiplier)
+        logger.info("Price cut on %d items; demand multipliers %s", len(cut), multiplier.round(3).to_dict())
+    else:
+        logger.info("No elasticity.csv: price-cut scenarios skipped (run the elasticity stage first)")
     inputs = build_inputs(policy, final_forecast, supply, items)
     series = pd.DataFrame({"item_id": np.repeat(inputs.item_ids, len(inputs.dc_ids)), "dc_id": np.tile(inputs.dc_ids, len(inputs.item_ids))})
     series = series.merge(policy[SERIES_KEYS + ["pattern", "mean_weekly_demand"]], on=SERIES_KEYS, how="left", validate="one_to_one")
@@ -300,11 +349,11 @@ def run(cfg: dict) -> None:
     noise = draw_noise(pools, len(inputs.item_ids), len(inputs.dc_ids), cfg["forecast"]["horizon_groups"], sim_cfg["runs"], rng)
 
     kpi_frames, weekly_frames, timings, supply_binding = [], [], {}, {}
-    for scenario in build_scenarios(inputs, cfg, policies):
+    for scenario in build_scenarios(inputs, cfg, policies, price_cut):
         start = time.perf_counter()
         results = simulate(inputs, noise, scenario, cfg["allocation"]["abc_weight"], cfg["allocation"]["cover_basis"])
         supply_binding[scenario.name] = round(float(results["supply_binding"].mean()), 3)
-        kpi_frames.append(summarise(run_kpis(results, inputs)).assign(scenario=scenario.name))
+        kpi_frames.append(summarise(run_kpis(results, inputs, scenario.price_multiplier)).assign(scenario=scenario.name))
         weekly_frames.append(weekly_summary(results, inputs).assign(scenario=scenario.name))
         timings[scenario.name] = round(time.perf_counter() - start, 1)
         logger.info("Scenario %s: %.1f s", scenario.name, timings[scenario.name])
@@ -317,7 +366,7 @@ def run(cfg: dict) -> None:
 
     pd.set_option("display.width", 220)
     overall = kpis[kpis["group"] == "All"].pivot(index="scenario", columns="kpi", values="mean")[KPIS]
-    order = [s.name for s in build_scenarios(inputs, cfg, policies)]
+    order = [s.name for s in build_scenarios(inputs, cfg, policies, price_cut)]
     print(f"\nSimulation: {sim_cfg['runs']} runs x {sim_cfg['horizon_weeks']} weeks, {len(series)} series (means across runs, all series)")
     print(overall.reindex(order).round(3).to_string())
     fill = kpis[kpis["kpi"] == "fill_rate"].pivot(index="scenario", columns="group", values="mean").reindex(order)

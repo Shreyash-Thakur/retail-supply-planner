@@ -4,7 +4,9 @@ import argparse
 import logging
 from collections.abc import Callable
 
-from src import app_data, backtest, exceptions, final_forecast, inventory, pipeline, segment, simulate, supply_params
+from src import (
+    app_data, backtest, elasticity, exceptions, final_forecast, inventory, pipeline, segment, simulate, supply_params,
+)
 from src.config import load_config
 
 logger = logging.getLogger("run_all")
@@ -18,7 +20,7 @@ def _not_implemented(name: str) -> Callable[[dict], None]:
 
 
 STAGE_ORDER = [
-    "pipeline", "supply", "segment", "backtest", "forecast", "inventory", "simulate", "exceptions", "app_data",
+    "pipeline", "supply", "segment", "backtest", "forecast", "inventory", "elasticity", "simulate", "exceptions", "app_data",
 ]
 
 STAGES: dict[str, Callable[[dict], None]] = {name: _not_implemented(name) for name in STAGE_ORDER}
@@ -28,6 +30,7 @@ STAGES["segment"] = segment.run
 STAGES["backtest"] = backtest.run
 STAGES["forecast"] = final_forecast.run
 STAGES["inventory"] = inventory.run
+STAGES["elasticity"] = elasticity.run
 STAGES["simulate"] = simulate.run
 STAGES["exceptions"] = exceptions.run
 STAGES["app_data"] = app_data.run
