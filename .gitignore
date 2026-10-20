@@ -1,0 +1,9 @@
+data/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+kaggle.json
+.env
+.streamlit/secrets.toml
+Errors and their fixes/

@@ -1,0 +1,71 @@
+seed: 42
+
+data:
+  raw_dir: data/raw
+  bronze_dir: data/bronze
+  silver_dir: data/silver
+  gold_dir: data/gold
+  outputs_dir: data/outputs
+  app_data_dir: app_data
+
+slice:
+  dept_id: FOODS_3
+  top_n_by_volume: 100
+  random_extra_items: 50
+  volume_window_weeks: 52
+  dc_map: {CA_1: CA, CA_2: CA, CA_3: CA, CA_4: CA, TX_1: TX, TX_2: TX, TX_3: TX, WI_1: WI, WI_2: WI, WI_3: WI}
+
+forecast:
+  horizon_weeks: 12
+  backtest_folds: 3
+  min_history_weeks_for_seasonal: 104
+  croston_alpha: 0.1
+  tsb_alpha: 0.1
+  tsb_beta: 0.1
+  quantiles: [0.5, 0.9, 0.95, 0.98]
+  lgbm:
+    objective: tweedie
+    tweedie_variance_power: 1.2
+    learning_rate: 0.05
+    num_leaves: 63
+    min_data_in_leaf: 50
+    feature_fraction: 0.8
+    bagging_fraction: 0.8
+    bagging_freq: 1
+    n_estimators: 800
+    early_stopping_rounds: 50
+
+segment:
+  abc_cutoffs: [0.80, 0.95]
+  xyz_cutoffs: [0.5, 1.0]
+  adi_cutoff: 1.32
+  cv2_cutoff: 0.49
+  window_weeks: 52
+
+supply:
+  lead_time_weeks_min: 1
+  lead_time_weeks_max: 4
+  supplier_capacity_factor: 1.10
+  opening_stock_weeks: 3
+  dc_capacity_weeks: 8
+  unit_cost_share_of_price: 0.60
+  annual_holding_cost_rate: 0.25
+
+inventory:
+  service_level_by_abc: {A: 0.98, B: 0.95, C: 0.90}
+  min_error_points: 6
+
+allocation:
+  abc_weight: {A: 3.0, B: 2.0, C: 1.0}
+
+simulation:
+  runs: 200
+  horizon_weeks: 12
+  min_residuals_per_series: 10
+
+scenarios:
+  baseline: {}
+  demand_surge: {abc_class: A, dc_id: CA, uplift: 0.25, start_week: 2, duration_weeks: 4}
+  supplier_disruption: {capacity_factor: 0.50, start_week: 3, duration_weeks: 3}
+  lead_time_shock: {extra_weeks: 2}
+  flat_service_level: {service_level: 0.98}
