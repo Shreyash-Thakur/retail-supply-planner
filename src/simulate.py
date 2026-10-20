@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import pandas as pd
 
-from src.allocation import allocate_fair_share, allocate_lp
+from src.allocation import allocate_fair_share, allocate_lp, allocate_two_tier
 from src.errors import DataQualityError
 from src.inventory import compute_policy, forecast_error_sigma
 
@@ -43,6 +43,7 @@ class SimInputs:
     unit_price: np.ndarray
     weekly_holding_cost: np.ndarray
     groups: dict = field(default_factory=dict)  # extra KPI groups: name -> (I, D) bool mask
+    safety_stock: np.ndarray | None = None  # (I, D), needed only by the two-tier allocation
 
 
 @dataclass(frozen=True)
@@ -52,7 +53,7 @@ class Scenario:
     capacity_factor: np.ndarray | None = None  # (H,)
     extra_lead_weeks: int = 0
     order_up_to: np.ndarray | None = None  # replaces the baseline policy
-    method: str = "lp"
+    method: str = "lp"  # "lp", "fair_share" or "two_tier"
     price_multiplier: np.ndarray | None = None  # (I,) selling price relative to the baseline price
 
 
@@ -94,7 +95,7 @@ def draw_noise(pools: list[list[np.ndarray]], n_items: int, n_dcs: int, horizon_
 
 
 def simulate(inputs: SimInputs, noise: np.ndarray, scenario: Scenario, abc_weight: dict,
-             cover_basis: str = "position") -> dict[str, np.ndarray]:
+             cover_basis: str = "position", two_tier_factor: float = 10.0) -> dict[str, np.ndarray]:
     """Run the weekly loop. Returns arrays shaped (runs, H, I, D): demand, sold, lost, on_hand, in_transit, arrivals, shipped.
 
     cover_basis sets the weeks of cover in the allocation weights: "position" (on hand
@@ -111,7 +112,9 @@ def simulate(inputs: SimInputs, noise: np.ndarray, scenario: Scenario, abc_weigh
     order_up_to = inputs.order_up_to if scenario.order_up_to is None else scenario.order_up_to
     capacity_factor = np.ones(horizon) if scenario.capacity_factor is None else scenario.capacity_factor
     class_weight = np.vectorize(abc_weight.get)(inputs.abc).astype(float)
-    allocate = allocate_lp if scenario.method == "lp" else allocate_fair_share
+    allocate = {"lp": allocate_lp, "fair_share": allocate_fair_share}.get(scenario.method)
+    if scenario.method == "two_tier" and inputs.safety_stock is None:
+        raise ValueError("The two-tier allocation needs inputs.safety_stock.")
     out = {k: np.zeros((runs, horizon, n_items, n_dcs), dtype=np.int64)
            for k in ("demand", "sold", "lost", "on_hand", "in_transit", "arrivals", "shipped")}
     out["supply_binding"] = np.zeros((runs, horizon, n_items), dtype=bool)  # item requests exceeded its supply
@@ -137,7 +140,12 @@ def simulate(inputs: SimInputs, noise: np.ndarray, scenario: Scenario, abc_weigh
         cover = np.divide(stock, inputs.mean_weekly_forecast[None], out=np.full(on_hand.shape, 52.0),
                           where=inputs.mean_weekly_forecast[None] > 0)
         weights = class_weight[None] * (1 + 1 / (1 + cover))
-        shipped = np.stack([allocate(requests[r], supply, dc_free[r], weights[r]) for r in range(runs)])
+        if scenario.method == "two_tier":
+            cycle_need = order_up_to[None] - inputs.safety_stock[None] - position
+            shipped = np.stack([allocate_two_tier(requests[r], cycle_need[r], supply, dc_free[r], weights[r], two_tier_factor)
+                                for r in range(runs)])
+        else:
+            shipped = np.stack([allocate(requests[r], supply, dc_free[r], weights[r]) for r in range(runs)])
         for lt in np.unique(lead_new):
             rows = lead_new == lt
             arrivals[..., w + lt][:, rows, :] += shipped[:, rows, :]  # basic index first keeps axis order
@@ -240,6 +248,7 @@ def build_inputs(policy: pd.DataFrame, final_forecast: pd.DataFrame, supply: pd.
         unit_price=it["unit_price"].to_numpy(dtype=float),
         weekly_holding_cost=it["weekly_holding_cost"].to_numpy(dtype=float),
         groups={f"model_{m}": model == m for m in sorted(set(model.ravel()))},
+        safety_stock=_grid(p, "safety_stock", item_ids, dc_ids).astype(float),
     )
 
 
@@ -281,6 +290,8 @@ def build_scenarios(inputs: SimInputs, cfg: dict, policies: dict[str, pd.DataFra
     return [
         Scenario("baseline"),
         Scenario("baseline_fair_share", method="fair_share"),
+        # Agreed addition (amendment 10): LP that covers expected demand at every DC before topping up safety stock.
+        Scenario("baseline_two_tier_lp", method="two_tier"),
         Scenario("demand_surge", demand_multiplier=multiplier),
         Scenario("supplier_disruption", capacity_factor=capacity),
         Scenario("lead_time_shock_policy_not_updated", extra_lead_weeks=extra),
@@ -351,7 +362,8 @@ def run(cfg: dict) -> None:
     kpi_frames, weekly_frames, timings, supply_binding = [], [], {}, {}
     for scenario in build_scenarios(inputs, cfg, policies, price_cut):
         start = time.perf_counter()
-        results = simulate(inputs, noise, scenario, cfg["allocation"]["abc_weight"], cfg["allocation"]["cover_basis"])
+        results = simulate(inputs, noise, scenario, cfg["allocation"]["abc_weight"], cfg["allocation"]["cover_basis"],
+                           cfg["allocation"]["two_tier_factor"])
         supply_binding[scenario.name] = round(float(results["supply_binding"].mean()), 3)
         kpi_frames.append(summarise(run_kpis(results, inputs, scenario.price_multiplier)).assign(scenario=scenario.name))
         weekly_frames.append(weekly_summary(results, inputs).assign(scenario=scenario.name))

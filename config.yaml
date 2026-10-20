@@ -63,6 +63,7 @@ inventory:
 allocation:
   abc_weight: {A: 3.0, B: 2.0, C: 1.0}
   cover_basis: position
+  two_tier_factor: 10.0
 
 elasticity:
   min_distinct_prices: 3

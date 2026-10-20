@@ -26,20 +26,24 @@ def weighted_shortfall(requests: np.ndarray, allocation: np.ndarray, weights: np
 
 
 def _round_allocation(x: np.ndarray, requests: np.ndarray, supply: np.ndarray, dc_free: np.ndarray,
-                      weights: np.ndarray) -> np.ndarray:
+                      weights: np.ndarray, dc_of_col: np.ndarray | None = None) -> np.ndarray:
     """Round down, then give each item's units lost to rounding, one at a time, to its
-    highest-weight unmet request that still has DC room. Never breaks a constraint."""
+    highest-weight unmet request that still has DC room. Never breaks a constraint.
+
+    dc_of_col maps each column to its DC when a DC has several columns (two-tier requests).
+    """
+    dc_of_col = np.arange(x.shape[1]) if dc_of_col is None else dc_of_col
     alloc = np.floor(x + EPS).astype(np.int64)
     leftover = np.floor(x.sum(axis=1) + EPS).astype(np.int64) - alloc.sum(axis=1)
-    room_dc = dc_free - alloc.sum(axis=0)
+    room_dc = dc_free - np.bincount(dc_of_col, weights=alloc.sum(axis=0), minlength=len(dc_free)).astype(np.int64)
     for i in np.flatnonzero(leftover > 0):  # rare: only items whose LP split was fractional
         for _ in range(int(min(leftover[i], supply[i] - alloc[i].sum()))):
-            open_ = (alloc[i] < requests[i]) & (room_dc > 0)
+            open_ = (alloc[i] < requests[i]) & (room_dc[dc_of_col] > 0)
             if not open_.any():
                 break
-            d = np.flatnonzero(open_)[np.argmax(weights[i, open_])]
-            alloc[i, d] += 1
-            room_dc[d] -= 1
+            c = np.flatnonzero(open_)[np.argmax(weights[i, open_])]
+            alloc[i, c] += 1
+            room_dc[dc_of_col[c]] -= 1
     return alloc
 
 
@@ -87,10 +91,12 @@ def allocate_lp(requests: np.ndarray, supply: np.ndarray, dc_free_capacity: np.n
     return _solve_lp(requests, supply, dc_free, weights)
 
 
-def _solve_lp(requests: np.ndarray, supply: np.ndarray, dc_free: np.ndarray, weights: np.ndarray) -> np.ndarray:
-    n_items, n_dcs = requests.shape
-    item_rows = np.kron(np.eye(n_items), np.ones(n_dcs))
-    dc_rows = np.tile(np.eye(n_dcs), n_items)
+def _solve_lp(requests: np.ndarray, supply: np.ndarray, dc_free: np.ndarray, weights: np.ndarray,
+              dc_of_col: np.ndarray | None = None) -> np.ndarray:
+    n_items, n_cols = requests.shape
+    dc_of_col = np.arange(n_cols) if dc_of_col is None else dc_of_col
+    item_rows = np.kron(np.eye(n_items), np.ones(n_cols))
+    dc_rows = np.tile((dc_of_col[None, :] == np.arange(len(dc_free))[:, None]).astype(float), n_items)
     result = linprog(
         c=-weights.ravel(),
         A_ub=np.vstack([item_rows, dc_rows]),
@@ -100,8 +106,35 @@ def _solve_lp(requests: np.ndarray, supply: np.ndarray, dc_free: np.ndarray, wei
     )
     if not result.success:
         logger.warning("LP allocation failed (%s); using fair share for this week", result.message)
-        return allocate_fair_share(requests, supply, dc_free, weights)
-    return _round_allocation(result.x.reshape(n_items, n_dcs), requests, supply, dc_free, weights)
+        if n_cols == len(dc_free):
+            return allocate_fair_share(requests, supply, dc_free, weights)
+        per_dc = np.stack([requests[:, dc_of_col == d].sum(axis=1) for d in range(len(dc_free))], axis=1)
+        return allocate_fair_share(per_dc, supply, dc_free)
+    return _round_allocation(result.x.reshape(n_items, n_cols), requests, supply, dc_free, weights, dc_of_col)
+
+
+def allocate_two_tier(requests: np.ndarray, cycle_need: np.ndarray, supply: np.ndarray, dc_free_capacity: np.ndarray,
+                      weights: np.ndarray, tier1_factor: float) -> np.ndarray:
+    """LP in which units covering expected demand outrank units topping up safety stock.
+
+    Each request is split into tier 1, min(request, cycle_need), where cycle_need is the
+    order-up-to level minus safety stock minus the inventory position, and tier 2, the rest.
+    Tier 1 units get tier1_factor times the normal weight, so every DC's expected demand is
+    covered before any DC's buffer is topped up. Returns the per-DC allocation (items, dcs).
+    """
+    requests = np.asarray(requests, dtype=np.int64)
+    supply = np.asarray(supply, dtype=np.int64)
+    dc_free = np.maximum(np.asarray(dc_free_capacity, dtype=np.int64), 0)
+    n_dcs = requests.shape[1]
+    tier1 = np.minimum(requests, np.maximum(0, np.ceil(cycle_need))).astype(np.int64)
+    split = np.concatenate([tier1, requests - tier1], axis=1)
+    split_weights = np.concatenate([weights * tier1_factor, weights], axis=1)
+    dc_of_col = np.tile(np.arange(n_dcs), 2)
+    if (requests.sum(axis=0) <= dc_free).all():
+        x = _greedy_by_item(split, supply, split_weights)
+    else:
+        x = _solve_lp(split, supply, dc_free, split_weights, dc_of_col)
+    return x[:, :n_dcs] + x[:, n_dcs:]
 
 
 def demo_constrained_week(policy: pd.DataFrame, supply: pd.DataFrame, items: pd.DataFrame, cfg: dict) -> pd.DataFrame:

@@ -108,3 +108,15 @@ def test_price_multiplier_scales_revenue_and_lost_value_only():
     all_base, all_cut = base[base["group"] == "All"], cut[cut["group"] == "All"]
     np.testing.assert_allclose(all_base["revenue"].to_numpy() - all_cut["revenue"].to_numpy(), 0.1 * revenue_item1)
     np.testing.assert_allclose(all_base["fill_rate"], all_cut["fill_rate"])
+
+
+def test_two_tier_scenario_runs_and_keeps_stock_balance():
+    from dataclasses import replace
+
+    inputs = replace(make_inputs(supplier_capacity=25, opening=20), safety_stock=np.full((2, 3), 15.0))
+    noise = draw_noise([[np.array([-5.0, 0.0, 5.0])] * 3 for _ in range(6)], 2, 3, [4, 8, 12], runs=10,
+                       rng=np.random.default_rng(1))
+    results = simulate(inputs, noise, Scenario("t", method="two_tier"), ABC_WEIGHT)  # raises if stock balance breaks
+    assert (results["shipped"].sum(axis=(2, 3)) <= 2 * 25).all()
+    with pytest.raises(ValueError, match="safety_stock"):
+        simulate(make_inputs(), noise, Scenario("t", method="two_tier"), ABC_WEIGHT)

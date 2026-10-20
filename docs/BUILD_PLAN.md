@@ -14,6 +14,7 @@ Repository name: `retail-supply-planner`
 7. Multi-agent work is allowed only within a phase for independent tasks. Phases still run in order, with acceptance checks and pytest before each commit.
 8. Nothing is pushed to GitHub until the whole project is done.
 9. Model selection margin (agreed after the first full run): per pattern, among models within `forecast.selection_wape_margin_pp` (1.0) WAPE points of the lowest WAPE, choose the lowest absolute bias. With a margin of 0 this is the original rule. Reason: the original rule chose naive for intermittent series by 0.2 points while it under-forecast by 17%, which left 21 series with a zero forecast and those series at 65% fill rate.
+10. Two-tier LP allocation (agreed after the first full run): an extra simulation scenario, `baseline_two_tier_lp`, in which each DC request is split into units covering expected demand (order-up-to minus safety stock minus inventory position) and the safety-stock top-up, with the first tier weighted `allocation.two_tier_factor` (10) times higher. The spec's LP stays the default policy. Reason: fair share beat the spec's LP on fill rate because a linear objective fills one DC's whole request, buffer included, before the next DC gets anything.
 
 ---
 

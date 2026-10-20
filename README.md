@@ -75,7 +75,7 @@ Full tables, each with the command that produced it: [RESULTS.md](RESULTS.md). H
 
 - LightGBM is the most accurate model overall (WAPE 0.280, 8.9 points better than naive) and is chosen for every pattern except inactive. For intermittent series it wins on the bias tie-break (amendment 9): the plain lowest-WAPE rule picked naive by 0.2 points, which under-forecast by 17% and cost those series a 65% fill rate.
 - Baseline policy: 93.7% fill rate. Supplier capacity binds in 59% of item-weeks; with unlimited supply the same policy reaches 99.4%.
-- Fair-share allocation beats the LP on fill rate over 12 weeks (95.2% vs 93.7%), although the LP wins on its own weighted objective in a single constrained week. DECISIONS.md, Phase 8, explains why.
+- Fair-share allocation beats the LP on fill rate over 12 weeks (95.2% vs 93.7%), although the LP wins on its own weighted objective in a single constrained week. A two-tier LP that covers every DC's expected demand before any safety stock top-up (amendment 10) reaches 94.5%, with the best cycle service (89.8%) and fewest stockout weeks of the three. DECISIONS.md, Phase 8 and amendment 10, explain why.
 - Recomputing reorder points after a 2-week lead time shock recovers 7.9 points of fill rate (80.4% to 88.3%).
 - Stretch: the exception list flags 288 issues on 230 series, ranked by value at risk; a 10% price cut on the 10 biggest items lowers revenue (only 4 of them have demand elastic enough to pay for it, and 40 of 108 item-level elasticity estimates have the wrong sign, a sign of confounding in observational prices); bottom-up forecasts beat top-down at every level, total included (WAPE 0.049 vs 0.102).
 

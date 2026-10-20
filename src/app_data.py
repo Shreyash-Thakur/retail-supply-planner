@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 SERIES_KEYS = ["item_id", "dc_id"]
 SCENARIO_ORDER = [
-    "baseline", "baseline_fair_share", "demand_surge", "supplier_disruption",
+    "baseline", "baseline_fair_share", "baseline_two_tier_lp", "demand_surge", "supplier_disruption",
     "lead_time_shock_policy_not_updated", "lead_time_shock_policy_updated", "flat_service_level",
     "diagnostic_unlimited_supply", "price_cut_policy_not_updated", "price_cut_policy_updated",
 ]
@@ -148,10 +148,16 @@ def write_results(cfg: dict, meta: dict) -> str:
               "`python run_all.py --stage simulate` (12 weeks, 200 runs)", "",
               "One constrained week (opening stock on hand, empty pipeline, supplier capacity at 50%):", "", _md_table(demo_abc), "",
               f"Weighted shortfall: LP {w_short('lp'):,.0f}, fair share {w_short('fair_share'):,.0f}.", ""]
-    sim_cmp = kpis[(kpis["scenario"].isin(["baseline", "baseline_fair_share"])) & (kpis["kpi"] == "fill_rate")]
-    sim_cmp = sim_cmp.pivot(index="group", columns="scenario", values="mean").reset_index().rename(
-        columns={"baseline": "fill_rate_lp", "baseline_fair_share": "fill_rate_fair_share"})
-    parts += ["Simulated fill rate over 12 weeks (mean of 200 runs):", "", _md_table(sim_cmp), ""]
+    methods = {"baseline": "lp", "baseline_two_tier_lp": "two_tier_lp", "baseline_fair_share": "fair_share"}
+    present = [s for s in methods if s in set(kpis["scenario"])]
+    sim_cmp = kpis[(kpis["scenario"].isin(present)) & (kpis["kpi"] == "fill_rate")]
+    sim_cmp = sim_cmp.pivot(index="group", columns="scenario", values="mean")[present].reset_index().rename(
+        columns={s: f"fill_rate_{m}" for s, m in methods.items()})
+    by_kpi = kpis[(kpis["scenario"].isin(present)) & (kpis["group"] == "All")].pivot(
+        index="kpi", columns="scenario", values="mean")[present]
+    by_kpi = by_kpi.loc[["fill_rate", "cycle_service", "stockout_weeks", "avg_inventory_value", "lost_sales_value"]].reset_index()
+    parts += ["Simulated fill rate over 12 weeks (mean of 200 runs; `two_tier_lp` is amendment 10):", "", _md_table(sim_cmp), "",
+              "All series, by allocation method:", "", _md_table(by_kpi.rename(columns=methods)), ""]
 
     overall_k = kpis[kpis["group"] == "All"]
     table = overall_k.pivot(index="scenario", columns="kpi", values="mean").reindex(SCENARIO_ORDER)

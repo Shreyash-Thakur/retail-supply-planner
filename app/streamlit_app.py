@@ -16,6 +16,7 @@ GRID = "rgba(137,135,129,0.25)"  # muted ink at low alpha: a hairline in light a
 SCENARIO_LABELS = {
     "baseline": "Baseline (LP allocation)",
     "baseline_fair_share": "Baseline, fair-share allocation",
+    "baseline_two_tier_lp": "Baseline, two-tier LP allocation (expected demand first)",
     "demand_surge": "Demand surge: A items in CA +25%, weeks 2 to 5",
     "supplier_disruption": "Supplier disruption: capacity 50%, weeks 3 to 5",
     "lead_time_shock_policy_not_updated": "Lead time +2 weeks, policy not updated",
@@ -234,12 +235,16 @@ elif page == "Allocation":
     c2.metric("Weighted shortfall, fair share", f"{shortfall['fair_share']:,.0f}")
     st.subheader("Over 12 simulated weeks")
     kpis = data["sim_kpis"]
-    fill = kpis[(kpis["kpi"] == "fill_rate") & kpis["scenario"].isin(["baseline", "baseline_fair_share"])].pivot(
-        index="group", columns="scenario", values="mean").rename(columns={"baseline": "LP", "baseline_fair_share": "Fair share"})
+    methods = {"baseline": "LP (spec)", "baseline_two_tier_lp": "Two-tier LP", "baseline_fair_share": "Fair share"}
+    present = [s for s in methods if s in set(kpis["scenario"])]
+    fill = kpis[(kpis["kpi"] == "fill_rate") & kpis["scenario"].isin(present)].pivot(
+        index="group", columns="scenario", values="mean")[present].rename(columns=methods)
     st.dataframe(fill.round(3))
     st.write("The LP wins on its own objective in a single week, but fair share gives a higher fill rate over 12 weeks: a linear "
              "objective fills the top-weight DC's whole request (safety stock included) before the next DC gets anything, while "
-             "fair share hedges across DCs. See DECISIONS.md, Phase 8.")
+             "fair share hedges across DCs. The two-tier LP covers every DC's expected demand before topping up any safety stock: "
+             "it closes about half the fill-rate gap and has the best cycle service and fewest stockout weeks of the three. "
+             "See DECISIONS.md, Phase 8 and amendment 10.")
 
 elif page == "Scenarios":
     st.title("Scenarios")

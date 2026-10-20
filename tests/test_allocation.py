@@ -6,6 +6,7 @@ from src.allocation import (
     _solve_lp,
     allocate_fair_share,
     allocate_lp,
+    allocate_two_tier,
     allocation_weights,
     weighted_shortfall,
 )
@@ -97,3 +98,43 @@ def test_greedy_shortcut_matches_lp_when_dc_capacity_does_not_bind():
         greedy = _greedy_by_item(requests, supply, weights)
         lp = _solve_lp(requests, supply, dc_free, weights)
         assert np.sum(weights * greedy) == pytest.approx(np.sum(weights * lp), rel=1e-9)
+
+
+def test_two_tier_covers_expected_demand_everywhere_before_safety_stock():
+    requests = np.array([[100, 50, 0]])  # DC 1: 20 units of expected demand + 80 safety stock top-up; DC 2: 50 expected demand
+    cycle_need = np.array([[20, 50, 0]])
+    weights = np.array([[5.0, 4.0, 3.0]])  # DC 1 has the higher weight
+    dc_free = np.array([1000, 1000, 1000])
+    plain = allocate_lp(requests, np.array([60]), dc_free, weights)
+    tiered = allocate_two_tier(requests, cycle_need, np.array([60]), dc_free, weights, tier1_factor=10.0)
+    assert plain.tolist() == [[60, 0, 0]]
+    assert tiered.tolist() == [[20, 40, 0]]
+
+
+@pytest.mark.parametrize("slack", [True, False], ids=["dc_slack", "dc_binding"])
+def test_two_tier_respects_every_constraint(slack):
+    rng = np.random.default_rng(5)
+    for _ in range(50):
+        requests = rng.integers(0, 40, size=(8, 3))
+        cycle_need = rng.integers(-10, 40, size=(8, 3)).astype(float)
+        supply = rng.integers(0, 80, size=8)
+        dc_free = requests.sum(axis=0) + 5 if slack else rng.integers(0, 60, size=3)
+        alloc = allocate_two_tier(requests, cycle_need, supply, dc_free, rng.uniform(1, 6, size=(8, 3)), 10.0)
+        assert alloc.dtype.kind == "i"
+        assert (alloc >= 0).all() and (alloc <= requests).all()
+        assert (alloc.sum(axis=1) <= supply).all()
+        assert (alloc.sum(axis=0) <= dc_free).all()
+
+
+def test_two_tier_greedy_matches_solver_when_dc_capacity_does_not_bind():
+    rng = np.random.default_rng(9)
+    for _ in range(30):
+        requests = rng.integers(0, 40, size=(6, 3))
+        tier1 = np.minimum(requests, rng.integers(0, 40, size=(6, 3)))
+        split = np.concatenate([tier1, requests - tier1], axis=1)
+        w = rng.uniform(1, 6, size=(6, 3))
+        split_w = np.concatenate([w * 10, w], axis=1)
+        supply = rng.integers(0, 90, size=6)
+        greedy = _greedy_by_item(split, supply, split_w)
+        lp = _solve_lp(split, supply, requests.sum(axis=0) + 5, split_w, np.tile(np.arange(3), 2))
+        assert np.sum(split_w * greedy) == pytest.approx(np.sum(split_w * lp), rel=1e-9)

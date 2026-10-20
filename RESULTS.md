@@ -97,15 +97,25 @@ One constrained week (opening stock on hand, empty pipeline, supplier capacity a
 
 Weighted shortfall: LP 300,071, fair share 304,215.
 
-Simulated fill rate over 12 weeks (mean of 200 runs):
+Simulated fill rate over 12 weeks (mean of 200 runs; `two_tier_lp` is amendment 10):
 
-| group | fill_rate_lp | fill_rate_fair_share |
-|---|---|---|
-| A | 0.952 | 0.958 |
-| All | 0.937 | 0.952 |
-| B | 0.908 | 0.933 |
-| C | 0.895 | 0.944 |
-| model_lightgbm | 0.937 | 0.952 |
+| group | fill_rate_lp | fill_rate_two_tier_lp | fill_rate_fair_share |
+|---|---|---|---|
+| A | 0.952 | 0.957 | 0.958 |
+| All | 0.937 | 0.945 | 0.952 |
+| B | 0.908 | 0.923 | 0.933 |
+| C | 0.895 | 0.911 | 0.944 |
+| model_lightgbm | 0.937 | 0.945 | 0.952 |
+
+All series, by allocation method:
+
+| kpi | lp | two_tier_lp | fair_share |
+|---|---|---|---|
+| fill_rate | 0.937 | 0.945 | 0.952 |
+| cycle_service | 0.889 | 0.898 | 0.889 |
+| stockout_weeks | 1.330 | 1.226 | 1.333 |
+| avg_inventory_value | 140,441.005 | 137,478.469 | 134,914.558 |
+| lost_sales_value | 124,908.861 | 112,162.325 | 101,536.391 |
 
 ## Scenario KPIs (all series, mean of 200 runs)
 
@@ -115,6 +125,7 @@ Command: `python run_all.py --stage simulate`
 |---|---|---|---|---|---|---|---|---|---|---|
 | baseline | 0.937 | 0.934 | 0.941 | 0.889 | 1.330 | 140,441 | 8,102 | 124,909 | 10.383 | 1,702,135 |
 | baseline_fair_share | 0.952 | 0.948 | 0.955 | 0.889 | 1.333 | 134,915 | 7,784 | 101,536 | 9.918 | 1,725,508 |
+| baseline_two_tier_lp | 0.945 | 0.941 | 0.949 | 0.898 | 1.226 | 137,478 | 7,931 | 112,162 | 10.126 | 1,714,882 |
 | demand_surge | 0.928 | 0.924 | 0.932 | 0.875 | 1.498 | 130,738 | 7,543 | 146,566 | 9.503 | 1,731,662 |
 | supplier_disruption | 0.860 | 0.856 | 0.864 | 0.788 | 2.542 | 119,316 | 6,884 | 262,810 | 8.887 | 1,564,234 |
 | lead_time_shock_policy_not_updated | 0.804 | 0.799 | 0.808 | 0.652 | 4.172 | 87,116 | 5,026 | 346,260 | 6.510 | 1,480,784 |
@@ -134,6 +145,7 @@ Fill rate by group (model_naive and model_lightgbm group series by their chosen 
 |---|---|---|---|---|---|
 | baseline | 0.952 | 0.937 | 0.908 | 0.895 | 0.937 |
 | baseline_fair_share | 0.958 | 0.952 | 0.933 | 0.944 | 0.952 |
+| baseline_two_tier_lp | 0.957 | 0.945 | 0.923 | 0.911 | 0.945 |
 | demand_surge | 0.942 | 0.928 | 0.896 | 0.892 | 0.928 |
 | supplier_disruption | 0.880 | 0.860 | 0.807 | 0.824 | 0.860 |
 | lead_time_shock_policy_not_updated | 0.818 | 0.804 | 0.775 | 0.765 | 0.804 |
@@ -149,6 +161,7 @@ Share of item-weeks in which DC requests exceeded the item's supplier capacity:
 |---|---|
 | baseline | 0.589 |
 | baseline_fair_share | 0.592 |
+| baseline_two_tier_lp | 0.591 |
 | demand_surge | 0.628 |
 | supplier_disruption | 0.778 |
 | lead_time_shock_policy_not_updated | 0.327 |
