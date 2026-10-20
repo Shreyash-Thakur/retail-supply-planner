@@ -1,0 +1,16 @@
+{
+  "items": 150,
+  "dcs": [
+    "CA",
+    "TX",
+    "WI"
+  ],
+  "series": 450,
+  "weeks": 277,
+  "first_week": "2011-01-29",
+  "last_week": "2016-05-14",
+  "t_last": 276,
+  "horizon_weeks": 12,
+  "simulation_runs": 200,
+  "generated": "2026-10-20"
+}

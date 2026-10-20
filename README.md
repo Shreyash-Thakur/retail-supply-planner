@@ -58,7 +58,9 @@ pytest -q
 
 Stages can be run one at a time, in order: `pipeline`, `supply`, `segment`, `backtest`, `forecast`, `inventory`, `elasticity`, `simulate`, `exceptions`, `hierarchy`, `app_data` (`elasticity`, `exceptions` and `hierarchy` are the stretch tier). Each reads its inputs from `data/` and writes its outputs there. Every setting lives in `config.yaml`.
 
-`app_data/` holds the small derived files the dashboard reads (segments, scores, forecasts, a 52-week history per series, policy and simulation results). It is derived from M5 data, so check the competition's data rules before publishing it; if in doubt, deploy without it and use screenshots instead. It is not committed to this repository.
+`app_data/` holds the small derived files the dashboard reads (segments, scores, forecasts, a 52-week history per series, policy and simulation results), about 3 MB. It is committed so the dashboard can be deployed from this repository. It contains derived results and weekly aggregates from M5 data, not the raw files. The M5 data was made available by Walmart through the M5 competition (University of Nicosia, hosted on Kaggle); a public copy of the dataset is published under CC BY 4.0 (https://zenodo.org/records/12636070), which allows reuse with credit.
+
+To deploy on Streamlit Community Cloud, point it at `app/streamlit_app.py` on `main`. The app installs only `app/requirements.txt` (streamlit, pandas, plotly, pyarrow), because it reads `app_data/` and nothing else.
 
 ## Design decisions
 

@@ -1,0 +1,289 @@
+rank,item_id,dc_id,abc,exception_type,value_at_risk,detail
+1,FOODS_3_120,CA,A,forecast_bias,15843.20103348934,bias +35% over the last fold (12289 forecast vs 9108 actual)
+2,FOODS_3_120,WI,A,forecast_bias,7833.542477920904,bias +38% over the last fold (5740 forecast vs 4167 actual)
+3,FOODS_3_090,CA,A,forecast_bias,6347.755756187538,bias -21% over the last fold (16296 forecast vs 20585 actual)
+4,FOODS_3_444,WI,A,forecast_bias,5726.266329750939,bias -69% over the last fold (375 forecast vs 1195 actual)
+5,FOODS_3_318,WI,A,forecast_bias,5373.448687284096,bias -61% over the last fold (2340 forecast vs 5971 actual)
+6,FOODS_3_499,CA,A,forecast_bias,4705.296943577643,bias +44% over the last fold (6146 forecast vs 4264 actual)
+7,FOODS_3_120,TX,A,forecast_bias,4668.032808107636,bias +22% over the last fold (5231 forecast vs 4294 actual)
+8,FOODS_3_444,TX,A,forecast_bias,4580.014294452753,bias -57% over the last fold (486 forecast vs 1142 actual)
+9,FOODS_3_444,CA,A,forecast_bias,4058.468418811429,bias -67% over the last fold (292 forecast vs 873 actual)
+10,FOODS_3_077,CA,A,forecast_bias,3927.989660071284,bias +230% over the last fold (1958 forecast vs 594 actual)
+11,FOODS_3_444,WI,A,stockout_risk,3866.92,on hand falls to 0 (safety stock 330) by week 1; 554 units projected lost in weeks 1 to 4
+12,FOODS_3_587,WI,A,forecast_bias,3821.156340334072,bias +30% over the last fold (6758 forecast vs 5217 actual)
+13,FOODS_3_077,WI,B,forecast_bias,3689.6194742869543,bias +386% over the last fold (1613 forecast vs 332 actual)
+14,FOODS_3_077,TX,A,forecast_bias,3488.639816759798,bias +190% over the last fold (1848 forecast vs 637 actual)
+15,FOODS_3_090,WI,A,forecast_bias,3199.1401917185567,bias -20% over the last fold (8543 forecast vs 10705 actual)
+16,FOODS_3_811,TX,A,forecast_bias,3186.5478302111933,bias -31% over the last fold (3771 forecast vs 5466 actual)
+17,FOODS_3_318,CA,A,forecast_bias,2968.5726016927747,bias -43% over the last fold (2649 forecast vs 4655 actual)
+18,FOODS_3_804,TX,A,forecast_bias,2555.6237887866746,bias -31% over the last fold (3094 forecast vs 4453 actual)
+19,FOODS_3_066,CA,A,forecast_bias,2521.7425051835426,bias +45% over the last fold (2721 forecast vs 1875 actual)
+20,FOODS_3_282,TX,A,forecast_bias,2342.9677734725747,bias -23% over the last fold (3065 forecast vs 4002 actual)
+21,FOODS_3_811,WI,A,forecast_bias,2328.959234863719,bias -25% over the last fold (3771 forecast vs 5010 actual)
+22,FOODS_3_233,WI,A,forecast_bias,2323.15847981163,bias -51% over the last fold (910 forecast vs 1839 actual)
+23,FOODS_3_541,CA,A,forecast_bias,2286.1675944193594,bias +185% over the last fold (3747 forecast vs 1315 actual)
+24,FOODS_3_785,TX,A,forecast_bias,2247.1141357717074,bias +70% over the last fold (1813 forecast vs 1064 actual)
+25,FOODS_3_618,WI,C,forecast_bias,2141.584966464145,bias -97% over the last fold (38 forecast vs 1120 actual)
+26,FOODS_3_030,TX,A,forecast_bias,2084.0811445206896,bias -37% over the last fold (2577 forecast vs 4087 actual)
+27,FOODS_3_702,WI,A,forecast_bias,2077.6394586762763,bias -23% over the last fold (2391 forecast vs 3088 actual)
+28,FOODS_3_785,WI,A,forecast_bias,2049.5099928161785,bias +55% over the last fold (1922 forecast vs 1239 actual)
+29,FOODS_3_499,WI,A,forecast_bias,2001.822567729348,bias +46% over the last fold (2530 forecast vs 1729 actual)
+30,FOODS_3_362,TX,A,forecast_bias,1998.997099292718,bias -37% over the last fold (1341 forecast vs 2141 actual)
+31,FOODS_3_499,TX,A,forecast_bias,1978.795739515142,bias +30% over the last fold (3448 forecast vs 2656 actual)
+32,FOODS_3_233,CA,A,forecast_bias,1967.2105339843324,bias -21% over the last fold (2985 forecast vs 3772 actual)
+33,FOODS_3_444,TX,A,stockout_risk,1940.44,on hand falls to 0 (safety stock 422) by week 1; 278 units projected lost in weeks 1 to 4
+34,FOODS_3_178,TX,B,forecast_bias,1916.852012336945,bias -52% over the last fold (887 forecast vs 1855 actual)
+35,FOODS_3_714,TX,A,forecast_bias,1903.3672121126208,bias -21% over the last fold (4620 forecast vs 5825 actual)
+36,FOODS_3_329,TX,A,forecast_bias,1836.706386006124,bias -21% over the last fold (2279 forecast vs 2895 actual)
+37,FOODS_3_618,CA,C,forecast_bias,1794.3421270664198,bias -95% over the last fold (50 forecast vs 956 actual)
+38,FOODS_3_362,WI,A,forecast_bias,1760.7553740009105,bias -28% over the last fold (1782 forecast vs 2486 actual)
+39,FOODS_3_318,TX,B,forecast_bias,1740.5270765681448,bias -54% over the last fold (996 forecast vs 2172 actual)
+40,FOODS_3_516,TX,A,forecast_bias,1727.2726077295283,bias +20% over the last fold (2706 forecast vs 2249 actual)
+41,FOODS_3_326,WI,B,forecast_bias,1627.284466860497,bias -60% over the last fold (736 forecast vs 1836 actual)
+42,FOODS_3_281,CA,A,forecast_bias,1522.103643102247,bias -31% over the last fold (2439 forecast vs 3542 actual)
+43,FOODS_3_349,TX,A,forecast_bias,1469.0132379726094,bias -34% over the last fold (1694 forecast vs 2568 actual)
+44,FOODS_3_804,WI,A,forecast_bias,1337.7028731590303,bias -21% over the last fold (2700 forecast vs 3412 actual)
+45,FOODS_3_233,TX,B,forecast_bias,1326.6631709020671,bias -44% over the last fold (667 forecast vs 1198 actual)
+46,FOODS_3_690,WI,B,forecast_bias,1326.2952018210333,bias +76% over the last fold (309 forecast vs 176 actual)
+47,FOODS_3_469,TX,A,forecast_bias,1324.631958678188,bias +33% over the last fold (852 forecast vs 640 actual)
+48,FOODS_3_324,WI,A,forecast_bias,1294.2649123579288,bias +49% over the last fold (1303 forecast vs 872 actual)
+49,FOODS_3_789,WI,B,forecast_bias,1282.2339851926067,bias -31% over the last fold (1867 forecast vs 2722 actual)
+50,FOODS_3_808,CA,A,forecast_bias,1210.070932766173,bias +76% over the last fold (2991 forecast vs 1704 actual)
+51,FOODS_3_064,CA,A,forecast_bias,1205.600746466103,bias -20% over the last fold (4078 forecast vs 5100 actual)
+52,FOODS_3_664,WI,B,forecast_bias,1204.6205054433246,bias -35% over the last fold (1117 forecast vs 1710 actual)
+53,FOODS_3_695,WI,B,forecast_bias,1202.0903500223535,bias -32% over the last fold (644 forecast vs 946 actual)
+54,FOODS_3_690,CA,B,forecast_bias,1200.037720980634,bias +57% over the last fold (331 forecast vs 211 actual)
+55,FOODS_3_561,TX,B,forecast_bias,1185.2862355051377,bias -42% over the last fold (558 forecast vs 956 actual)
+56,FOODS_3_618,TX,C,forecast_bias,1162.56553570522,bias -95% over the last fold (32 forecast vs 619 actual)
+57,FOODS_3_281,WI,B,forecast_bias,1139.7079393148133,bias -32% over the last fold (1724 forecast vs 2550 actual)
+58,FOODS_3_635,TX,B,forecast_bias,1130.6283717154472,bias +246% over the last fold (1691 forecast vs 488 actual)
+59,FOODS_3_086,TX,B,forecast_bias,1108.460856301987,bias -29% over the last fold (2702 forecast vs 3810 actual)
+60,FOODS_3_327,CA,B,forecast_bias,1078.994421564654,bias +44% over the last fold (1076 forecast vs 747 actual)
+61,FOODS_3_135,CA,A,forecast_bias,1058.8032613315795,bias +36% over the last fold (2707 forecast vs 1992 actual)
+62,FOODS_3_635,CA,A,forecast_bias,1055.9656956303136,bias +62% over the last fold (2939 forecast vs 1816 actual)
+63,FOODS_3_491,WI,A,forecast_bias,1040.9171623917237,bias -21% over the last fold (2606 forecast vs 3309 actual)
+64,FOODS_3_808,WI,B,forecast_bias,1016.1360525419834,bias +113% over the last fold (2035 forecast vs 954 actual)
+65,FOODS_3_504,WI,C,forecast_bias,991.2796319524376,bias -59% over the last fold (462 forecast vs 1132 actual)
+66,FOODS_3_808,TX,B,forecast_bias,982.8576491447772,bias +232% over the last fold (1496 forecast vs 450 actual)
+67,FOODS_3_561,CA,A,forecast_bias,977.5593792216577,bias -24% over the last fold (1060 forecast vs 1388 actual)
+68,FOODS_3_636,TX,A,forecast_bias,958.5627804200474,bias +34% over the last fold (1087 forecast vs 813 actual)
+69,FOODS_3_690,TX,C,forecast_bias,951.2165068065706,bias +113% over the last fold (179 forecast vs 84 actual)
+70,FOODS_3_347,WI,C,forecast_bias,908.486905139024,bias -55% over the last fold (366 forecast vs 814 actual)
+71,FOODS_3_503,TX,A,forecast_bias,892.226407181858,bias -23% over the last fold (1235 forecast vs 1595 actual)
+72,FOODS_3_570,WI,C,forecast_bias,884.8714441060731,bias -77% over the last fold (151 forecast vs 665 actual)
+73,FOODS_3_396,CA,B,forecast_bias,871.521055983154,bias +44% over the last fold (262 forecast vs 182 actual)
+74,FOODS_3_086,WI,B,forecast_bias,848.2960139841703,bias -28% over the last fold (2193 forecast vs 3041 actual)
+75,FOODS_3_688,WI,B,forecast_bias,839.9602033324632,bias -40% over the last fold (665 forecast vs 1112 actual)
+76,FOODS_3_403,WI,B,forecast_bias,826.7715896915041,bias -41% over the last fold (783 forecast vs 1334 actual)
+77,FOODS_3_404,CA,B,forecast_bias,825.9764111656765,bias +87% over the last fold (1885 forecast vs 1006 actual)
+78,FOODS_3_288,TX,A,forecast_bias,817.5322537635456,bias -24% over the last fold (1758 forecast vs 2303 actual)
+79,FOODS_3_444,CA,A,stockout_risk,795.72,on hand falls to 0 (safety stock 167) by week 1; 114 units projected lost in weeks 1 to 4
+80,FOODS_3_030,WI,B,forecast_bias,780.0051148486804,bias -36% over the last fold (998 forecast vs 1563 actual)
+81,FOODS_3_635,WI,B,forecast_bias,772.8561945368214,bias +297% over the last fold (1099 forecast vs 277 actual)
+82,FOODS_3_319,CA,A,forecast_bias,764.5968045440451,bias +48% over the last fold (2523 forecast vs 1710 actual)
+83,FOODS_3_462,TX,B,forecast_bias,746.3688887674457,bias +37% over the last fold (2772 forecast vs 2026 actual)
+84,FOODS_3_664,TX,C,forecast_bias,744.1093248954788,bias -35% over the last fold (670 forecast vs 1037 actual)
+85,FOODS_3_557,TX,B,forecast_bias,710.6598715974109,bias -55% over the last fold (233 forecast vs 517 actual)
+86,FOODS_3_444,CA,A,demand_anomaly,694.2869436895319,"last week 363 units, expected range -191 to 264"
+87,FOODS_3_030,CA,B,forecast_bias,691.6476315036051,bias -24% over the last fold (1603 forecast vs 2104 actual)
+88,FOODS_3_405,CA,C,forecast_bias,686.3715514897013,bias -35% over the last fold (352 forecast vs 545 actual)
+89,FOODS_3_404,TX,B,forecast_bias,686.1216619277791,bias +116% over the last fold (1358 forecast vs 628 actual)
+90,FOODS_3_557,CA,B,forecast_bias,654.6519805975183,bias -45% over the last fold (316 forecast vs 578 actual)
+91,FOODS_3_672,WI,B,forecast_bias,643.8499380459539,bias +30% over the last fold (1139 forecast vs 879 actual)
+92,FOODS_3_324,TX,B,forecast_bias,637.6902777485707,bias +69% over the last fold (519 forecast vs 306 actual)
+93,FOODS_3_474,WI,B,forecast_bias,605.0005749707831,bias -21% over the last fold (1235 forecast vs 1557 actual)
+94,FOODS_3_664,CA,C,forecast_bias,591.5424492619882,bias -37% over the last fold (502 forecast vs 793 actual)
+95,FOODS_3_377,WI,B,forecast_bias,583.8195668987223,bias +22% over the last fold (1909 forecast vs 1561 actual)
+96,FOODS_3_462,CA,B,forecast_bias,582.7175855199343,bias +36% over the last fold (2200 forecast vs 1617 actual)
+97,FOODS_3_524,WI,C,forecast_bias,575.674896234636,bias +216% over the last fold (895 forecast vs 283 actual)
+98,FOODS_3_767,CA,B,forecast_bias,565.4531895726024,bias +98% over the last fold (1216 forecast vs 614 actual)
+99,FOODS_3_389,WI,B,forecast_bias,544.1942103231864,bias +21% over the last fold (1876 forecast vs 1552 actual)
+100,FOODS_3_789,TX,B,forecast_bias,522.1023564987208,bias -28% over the last fold (903 forecast vs 1251 actual)
+101,FOODS_3_809,WI,B,forecast_bias,519.5137501738488,bias -32% over the last fold (1104 forecast vs 1624 actual)
+102,FOODS_3_376,TX,B,forecast_bias,518.623014965488,bias +21% over the last fold (2977 forecast vs 2458 actual)
+103,FOODS_3_573,CA,B,forecast_bias,517.6439048973455,bias -26% over the last fold (1457 forecast vs 1975 actual)
+104,FOODS_3_404,WI,B,forecast_bias,512.3503598363201,bias +61% over the last fold (1439 forecast vs 894 actual)
+105,FOODS_3_319,WI,B,forecast_bias,487.7614828160958,bias +72% over the last fold (1240 forecast vs 721 actual)
+106,FOODS_3_524,CA,B,forecast_bias,476.9123955769241,bias +54% over the last fold (1448 forecast vs 941 actual)
+107,FOODS_3_557,WI,B,forecast_bias,467.62470817772936,bias -42% over the last fold (258 forecast vs 445 actual)
+108,FOODS_3_797,TX,B,forecast_bias,467.592015398689,bias -31% over the last fold (266 forecast vs 383 actual)
+109,FOODS_3_541,WI,C,forecast_bias,417.9595216456407,bias +111% over the last fold (846 forecast vs 401 actual)
+110,FOODS_3_326,CA,C,forecast_bias,417.4335864370673,bias -40% over the last fold (422 forecast vs 704 actual)
+111,FOODS_3_281,TX,C,forecast_bias,417.1158699842646,bias -27% over the last fold (800 forecast vs 1102 actual)
+112,FOODS_3_396,TX,C,forecast_bias,406.5177797319635,bias +87% over the last fold (81 forecast vs 43 actual)
+113,FOODS_3_109,TX,B,forecast_bias,403.035927481608,bias +28% over the last fold (1826 forecast vs 1423 actual)
+114,FOODS_3_524,TX,B,forecast_bias,395.48877304421,bias +81% over the last fold (939 forecast vs 518 actual)
+115,FOODS_3_657,TX,B,forecast_bias,389.6718950018117,bias +47% over the last fold (366 forecast vs 249 actual)
+116,FOODS_3_396,WI,C,forecast_bias,381.2503660963871,bias +47% over the last fold (110 forecast vs 75 actual)
+117,FOODS_3_363,TX,B,forecast_bias,375.1138926342194,bias +25% over the last fold (767 forecast vs 616 actual)
+118,FOODS_3_504,CA,C,forecast_bias,372.4335468029879,bias -41% over the last fold (364 forecast vs 616 actual)
+119,FOODS_3_216,CA,C,forecast_bias,371.10164563959125,bias -66% over the last fold (77 forecast vs 225 actual)
+120,FOODS_3_530,CA,B,forecast_bias,368.383115001209,bias +29% over the last fold (963 forecast vs 744 actual)
+121,FOODS_3_784,CA,C,forecast_bias,364.3781902727758,bias -54% over the last fold (212 forecast vs 458 actual)
+122,FOODS_3_070,WI,C,forecast_bias,356.5895345507024,bias -43% over the last fold (2410 forecast vs 4193 actual)
+123,FOODS_3_346,TX,B,forecast_bias,344.45221911480047,bias +39% over the last fold (625 forecast vs 451 actual)
+124,FOODS_3_541,TX,B,forecast_bias,342.3915114252668,bias +59% over the last fold (985 forecast vs 621 actual)
+125,FOODS_3_702,CA,A,stockout_risk,336.74,on hand falls to 0 (safety stock 179) by week 4; 113 units projected lost in weeks 1 to 4
+126,FOODS_3_109,CA,C,forecast_bias,336.6659977705169,bias +44% over the last fold (1105 forecast vs 768 actual)
+127,FOODS_3_809,CA,B,forecast_bias,322.0952070720461,bias +28% over the last fold (1457 forecast vs 1135 actual)
+128,FOODS_3_403,TX,C,forecast_bias,314.06019077511394,bias -25% over the last fold (634 forecast vs 843 actual)
+129,FOODS_3_569,WI,C,forecast_bias,306.2440137685351,bias -21% over the last fold (294 forecast vs 371 actual)
+130,FOODS_3_767,TX,B,forecast_bias,278.42021852766817,bias +64% over the last fold (761 forecast vs 465 actual)
+131,FOODS_3_752,WI,C,forecast_bias,274.1267423351197,bias -41% over the last fold (1971 forecast vs 3342 actual)
+132,FOODS_3_664,CA,C,stockout_risk,272.02,on hand falls to 0 (safety stock 25) by week 2; 134 units projected lost in weeks 1 to 4
+133,FOODS_3_388,TX,C,forecast_bias,258.3672025729954,bias -24% over the last fold (211 forecast vs 276 actual)
+134,FOODS_3_594,WI,C,forecast_bias,250.7361690286794,bias +69% over the last fold (656 forecast vs 389 actual)
+135,FOODS_3_594,TX,C,forecast_bias,243.2659919651049,bias +141% over the last fold (442 forecast vs 183 actual)
+136,FOODS_3_498,WI,C,forecast_bias,241.20048609194492,bias -30% over the last fold (2876 forecast vs 4082 actual)
+137,FOODS_3_216,WI,C,forecast_bias,238.7443850465077,bias -61% over the last fold (61 forecast vs 156 actual)
+138,FOODS_3_594,CA,C,forecast_bias,233.709385962878,bias +48% over the last fold (762 forecast vs 513 actual)
+139,FOODS_3_784,WI,C,forecast_bias,233.13474591984183,bias -45% over the last fold (192 forecast vs 350 actual)
+140,FOODS_3_100,TX,C,forecast_bias,229.90339801750017,bias +37% over the last fold (216 forecast vs 158 actual)
+141,FOODS_3_690,TX,C,stockout_risk,229.54,on hand falls to 0 (safety stock 6) by week 1; 23 units projected lost in weeks 1 to 4
+142,FOODS_3_132,TX,C,forecast_bias,227.7464813136764,bias +65% over the last fold (215 forecast vs 130 actual)
+143,FOODS_3_332,WI,C,forecast_bias,226.20320128332136,bias +29% over the last fold (513 forecast vs 399 actual)
+144,FOODS_3_430,WI,C,forecast_bias,225.467268326026,bias -29% over the last fold (91 forecast vs 129 actual)
+145,FOODS_3_347,WI,C,stockout_risk,221.27,on hand falls to 0 (safety stock 19) by week 2; 109 units projected lost in weeks 1 to 4
+146,FOODS_3_354,TX,C,forecast_bias,219.16182069464077,bias -37% over the last fold (124 forecast vs 198 actual)
+147,FOODS_3_454,WI,C,forecast_bias,218.29201854665007,bias -40% over the last fold (1632 forecast vs 2723 actual)
+148,FOODS_3_614,CA,C,forecast_bias,215.8912717055564,bias +108% over the last fold (443 forecast vs 213 actual)
+149,FOODS_3_809,TX,C,forecast_bias,207.9371737386277,bias -23% over the last fold (689 forecast vs 897 actual)
+150,FOODS_3_063,CA,B,forecast_bias,204.0979265097725,bias +20% over the last fold (492 forecast vs 410 actual)
+151,FOODS_3_007,WI,C,forecast_bias,201.39922417869087,bias -31% over the last fold (2223 forecast vs 3230 actual)
+152,FOODS_3_071,TX,C,forecast_bias,200.62080391127407,bias +27% over the last fold (695 forecast vs 545 actual)
+153,FOODS_3_664,TX,C,stockout_risk,196.91,on hand falls to 0 (safety stock 43) by week 2; 97 units projected lost in weeks 1 to 4
+154,FOODS_3_614,WI,C,forecast_bias,192.2414602599409,bias +69% over the last fold (500 forecast vs 295 actual)
+155,FOODS_3_767,WI,C,forecast_bias,188.42958374659693,bias +94% over the last fold (413 forecast vs 213 actual)
+156,FOODS_3_329,CA,A,stockout_risk,184.76,on hand falls to 0 (safety stock 536) by week 2; 62 units projected lost in weeks 1 to 4
+157,FOODS_3_405,CA,C,stockout_risk,181.56,on hand falls to 0 (safety stock 18) by week 2; 51 units projected lost in weeks 1 to 4
+158,FOODS_3_252,CA,A,demand_anomaly,179.92875747480736,"last week 1166 units, expected range 726 to 1052"
+159,FOODS_3_733,TX,C,forecast_bias,175.41839213798227,bias +65% over the last fold (234 forecast vs 142 actual)
+160,FOODS_3_072,TX,C,forecast_bias,173.58497705435042,bias -21% over the last fold (257 forecast vs 326 actual)
+161,FOODS_3_716,WI,C,forecast_bias,170.77485943738478,bias -22% over the last fold (402 forecast vs 517 actual)
+162,FOODS_3_430,TX,C,forecast_bias,169.2276401098006,bias -29% over the last fold (69 forecast vs 97 actual)
+163,FOODS_3_664,WI,B,stockout_risk,166.45999999999998,on hand falls to 0 (safety stock 98) by week 2; 82 units projected lost in weeks 1 to 4
+164,FOODS_3_319,TX,B,forecast_bias,162.00269325191005,bias +29% over the last fold (762 forecast vs 590 actual)
+165,FOODS_3_440,WI,C,forecast_bias,153.82570029228756,bias +37% over the last fold (118 forecast vs 86 actual)
+166,FOODS_3_539,CA,C,forecast_bias,153.4469353771794,bias -23% over the last fold (173 forecast vs 224 actual)
+167,FOODS_3_412,WI,C,forecast_bias,150.35138810723186,bias -25% over the last fold (2251 forecast vs 3003 actual)
+168,FOODS_3_233,CA,A,demand_anomaly,142.37936560683465,"last week 369 units, expected range 66 to 312"
+169,FOODS_3_133,TX,C,forecast_bias,136.30980301042004,bias +21% over the last fold (963 forecast vs 793 actual)
+170,FOODS_3_318,TX,B,stockout_risk,136.15999999999997,on hand falls to 0 (safety stock 106) by week 3; 92 units projected lost in weeks 1 to 4
+171,FOODS_3_569,WI,C,demand_anomaly,135.0835322042277,"last week 81 units, expected range 16 to 47"
+172,FOODS_3_063,WI,C,forecast_bias,133.14562692093392,bias +24% over the last fold (277 forecast vs 223 actual)
+173,FOODS_3_570,WI,C,stockout_risk,132.44,on hand falls to 0 (safety stock 77) by week 1; 77 units projected lost in weeks 1 to 4
+174,FOODS_3_469,CA,A,demand_anomaly,127.4260498638958,"last week 141 units, expected range -16 to 121"
+175,FOODS_3_614,TX,C,forecast_bias,126.2489954581941,bias +72% over the last fold (320 forecast vs 186 actual)
+176,FOODS_3_733,WI,C,forecast_bias,124.6341320156207,bias +33% over the last fold (260 forecast vs 195 actual)
+177,FOODS_3_504,TX,C,forecast_bias,120.99207291425768,bias -36% over the last fold (142 forecast vs 224 actual)
+178,FOODS_3_547,WI,C,forecast_bias,118.8290301806502,bias -21% over the last fold (2185 forecast vs 2779 actual)
+179,FOODS_3_155,CA,C,forecast_bias,112.46105323268064,bias +29% over the last fold (251 forecast vs 194 actual)
+180,FOODS_3_279,WI,C,forecast_bias,111.6365960952924,bias +41% over the last fold (133 forecast vs 94 actual)
+181,FOODS_3_498,TX,C,forecast_bias,110.1566216150526,bias -44% over the last fold (695 forecast vs 1246 actual)
+182,FOODS_3_440,TX,C,forecast_bias,106.352230648725,bias +27% over the last fold (102 forecast vs 80 actual)
+183,FOODS_3_664,CA,C,demand_anomaly,105.03895190750056,"last week 145 units, expected range 18 to 93"
+184,FOODS_3_063,TX,C,forecast_bias,104.8512821951162,bias +26% over the last fold (207 forecast vs 165 actual)
+185,FOODS_3_618,WI,C,stockout_risk,100.98,on hand falls to 0 (safety stock 151) by week 1; 51 units projected lost in weeks 1 to 4
+186,FOODS_3_284,WI,C,forecast_bias,100.05364646381824,bias -28% over the last fold (128 forecast vs 179 actual)
+187,FOODS_3_405,TX,C,stockout_risk,92.56,on hand falls to 0 (safety stock 3) by week 2; 26 units projected lost in weeks 1 to 4
+188,FOODS_3_347,TX,C,stockout_risk,89.32,on hand falls to 0 (safety stock 5) by week 2; 44 units projected lost in weeks 1 to 4
+189,FOODS_3_454,CA,C,forecast_bias,88.04174919483563,bias -36% over the last fold (789 forecast vs 1229 actual)
+190,FOODS_3_512,TX,C,forecast_bias,86.93137929392043,bias +200% over the last fold (66 forecast vs 22 actual)
+191,FOODS_3_702,TX,A,demand_anomaly,86.41936475407022,"last week 163 units, expected range 69 to 134"
+192,FOODS_3_501,TX,B,demand_anomaly,82.81275248034456,"last week 383 units, expected range 136 to 279"
+193,FOODS_3_279,TX,C,forecast_bias,81.78492119746089,bias +44% over the last fold (93 forecast vs 65 actual)
+194,FOODS_3_736,CA,C,forecast_bias,78.41117181151039,bias -32% over the last fold (94 forecast vs 139 actual)
+195,FOODS_3_658,TX,C,forecast_bias,70.3905798087748,bias -24% over the last fold (78 forecast vs 103 actual)
+196,FOODS_3_744,CA,A,demand_anomaly,69.98235956233513,"last week 195 units, expected range 226 to 394"
+197,FOODS_3_007,TX,C,forecast_bias,65.17451781459614,bias -27% over the last fold (898 forecast vs 1224 actual)
+198,FOODS_3_637,TX,C,forecast_bias,64.26407896917121,bias +33% over the last fold (87 forecast vs 65 actual)
+199,FOODS_3_498,CA,C,forecast_bias,63.47224267311687,bias +23% over the last fold (1668 forecast vs 1351 actual)
+200,FOODS_3_637,WI,C,forecast_bias,61.20960160865296,bias +21% over the last fold (119 forecast vs 98 actual)
+201,FOODS_3_284,CA,C,forecast_bias,61.02138771503488,bias -22% over the last fold (109 forecast vs 140 actual)
+202,FOODS_3_388,WI,B,demand_anomaly,60.090104316332486,"last week 57 units, expected range 16 to 42"
+203,FOODS_3_155,TX,C,forecast_bias,59.90527734150263,bias +47% over the last fold (95 forecast vs 65 actual)
+204,FOODS_3_547,CA,C,forecast_bias,57.90313041648434,bias -22% over the last fold (1015 forecast vs 1305 actual)
+205,FOODS_3_512,CA,C,forecast_bias,55.62590255877807,bias +46% over the last fold (89 forecast vs 61 actual)
+206,FOODS_3_573,TX,C,forecast_bias,54.241174472744746,bias -24% over the last fold (168 forecast vs 222 actual)
+207,FOODS_3_816,TX,C,forecast_bias,53.52082147289915,bias +59% over the last fold (722 forecast vs 454 actual)
+208,FOODS_3_324,CA,A,demand_anomaly,50.05300234270845,"last week 255 units, expected range 30 to 238"
+209,FOODS_3_454,TX,C,forecast_bias,50.02847402999942,bias +37% over the last fold (928 forecast vs 678 actual)
+210,FOODS_3_580,TX,C,forecast_bias,46.77073320749679,bias +34% over the last fold (927 forecast vs 693 actual)
+211,FOODS_3_347,CA,C,stockout_risk,46.69,on hand falls to 0 (safety stock 8) by week 2; 23 units projected lost in weeks 1 to 4
+212,FOODS_3_216,WI,C,stockout_risk,40.0,on hand falls to 0 (safety stock 21) by week 1; 16 units projected lost in weeks 1 to 4
+213,FOODS_3_288,CA,A,demand_anomaly,38.47393265522646,"last week 529 units, expected range 555 to 833"
+214,FOODS_3_295,TX,B,demand_anomaly,37.78062041047384,"last week 388 units, expected range 135 to 341"
+215,FOODS_3_530,WI,A,demand_anomaly,36.615154900617206,"last week 129 units, expected range 151 to 225"
+216,FOODS_3_811,WI,A,demand_anomaly,34.67280781473607,"last week 557 units, expected range 218 to 539"
+217,FOODS_3_326,TX,C,stockout_risk,34.03999999999999,on hand falls to 0 (safety stock 10) by week 3; 23 units projected lost in weeks 1 to 4
+218,FOODS_3_226,TX,A,demand_anomaly,31.611200443377,"last week 251 units, expected range 270 to 374"
+219,FOODS_3_736,TX,C,forecast_bias,30.034090616776176,bias +60% over the last fold (46 forecast vs 29 actual)
+220,FOODS_3_736,WI,C,forecast_bias,28.941638777435205,bias -24% over the last fold (52 forecast vs 69 actual)
+221,FOODS_3_313,TX,A,demand_anomaly,26.943117998415214,"last week 124 units, expected range 138 to 251"
+222,FOODS_3_326,CA,C,stockout_risk,26.64,on hand falls to 0 (safety stock 34) by week 3; 18 units projected lost in weeks 1 to 4
+223,FOODS_3_109,WI,B,demand_anomaly,26.61514790435814,"last week 134 units, expected range 161 to 371"
+224,FOODS_3_389,WI,B,demand_anomaly,26.229585252423927,"last week 86 units, expected range 102 to 210"
+225,FOODS_3_135,WI,B,demand_anomaly,19.967468525205387,"last week 89 units, expected range 25 to 76"
+226,FOODS_3_228,CA,A,demand_anomaly,17.5560508179237,"last week 206 units, expected range 125 to 196"
+227,FOODS_3_216,CA,C,stockout_risk,17.5,on hand falls to 0 (safety stock 37) by week 1; 7 units projected lost in weeks 1 to 4
+228,FOODS_3_430,TX,C,demand_anomaly,15.940924922747858,"last week 14 units, expected range 4 to 11"
+229,FOODS_3_809,TX,C,stockout_risk,15.0,on hand falls to 0 (safety stock 36) by week 4; 15 units projected lost in weeks 1 to 4
+230,FOODS_3_784,TX,C,stockout_risk,14.799999999999995,on hand falls to 0 (safety stock 7) by week 1; 10 units projected lost in weeks 1 to 4
+231,FOODS_3_784,CA,C,demand_anomaly,12.514246923554335,"last week 56 units, expected range 2 to 48"
+232,FOODS_3_739,CA,A,demand_anomaly,12.48166516955274,"last week 387 units, expected range 395 to 621"
+233,FOODS_3_741,TX,C,demand_anomaly,11.398737977456578,"last week 90 units, expected range 40 to 82"
+234,FOODS_3_570,WI,C,demand_anomaly,10.866063603241887,"last week 93 units, expected range -6 to 87"
+235,FOODS_3_377,TX,A,demand_anomaly,9.463920748858651,"last week 528 units, expected range 534 to 796"
+236,FOODS_3_216,TX,C,stockout_risk,7.5,on hand falls to 0 (safety stock 9) by week 1; 3 units projected lost in weeks 1 to 4
+237,FOODS_3_007,CA,C,demand_anomaly,7.025322017302496,"last week 207 units, expected range 38 to 172"
+238,FOODS_3_327,CA,B,demand_anomaly,7.003371815625663,"last week 46 units, expected range 48 to 100"
+239,FOODS_3_071,WI,C,demand_anomaly,6.977519028342979,"last week 94 units, expected range 40 to 89"
+240,FOODS_3_658,CA,C,demand_anomaly,6.844986958446171,"last week 29 units, expected range 5 to 27"
+241,FOODS_3_132,WI,B,demand_anomaly,6.40212425255073,"last week 21 units, expected range 23 to 61"
+242,FOODS_3_702,TX,A,stockout_risk,5.96,on hand falls to 0 (safety stock 86) by week 4; 2 units projected lost in weeks 1 to 4
+243,FOODS_3_637,TX,C,demand_anomaly,4.573365118412884,"last week 1 units, expected range 3 to 11"
+244,FOODS_3_440,TX,C,demand_anomaly,3.172394535157798,"last week 4 units, expected range 5 to 13"
+245,FOODS_3_376,CA,B,demand_anomaly,3.0837632283219136,"last week 152 units, expected range 60 to 149"
+246,FOODS_3_070,TX,C,demand_anomaly,2.6268727977189945,"last week 162 units, expected range 30 to 149"
+247,FOODS_3_454,WI,C,demand_anomaly,1.788553433618961,"last week 298 units, expected range 14 to 289"
+248,FOODS_3_702,WI,A,demand_anomaly,1.7598037939042956,"last week 414 units, expected range 207 to 413"
+249,FOODS_3_042,CA,B,demand_anomaly,1.6702575134947584,"last week 83 units, expected range 45 to 82"
+250,FOODS_3_469,TX,A,demand_anomaly,1.578697420896685,"last week 74 units, expected range -15 to 74"
+251,FOODS_3_413,WI,B,demand_anomaly,1.4724432086040051,"last week 82 units, expected range 83 to 140"
+252,FOODS_3_503,CA,A,demand_anomaly,0.8038782964013387,"last week 104 units, expected range 104 to 184"
+253,FOODS_3_226,CA,A,demand_anomaly,0.7123340349594491,"last week 164 units, expected range 110 to 164"
+254,FOODS_3_007,TX,C,demand_anomaly,0.6359683662224827,"last week 136 units, expected range -38 to 133"
+255,FOODS_3_547,TX,C,demand_anomaly,0.2171043741681061,"last week 57 units, expected range 58 to 200"
+256,FOODS_3_403,TX,C,demand_anomaly,0.2042618486757277,"last week 83 units, expected range 27 to 83"
+257,FOODS_3_086,WI,B,stockout_risk,0.0,on hand falls to 271 (safety stock 339) by week 3; 0 units projected lost in weeks 1 to 4
+258,FOODS_3_145,WI,C,stockout_risk,0.0,on hand falls to 7 (safety stock 8) by week 3; 0 units projected lost in weeks 1 to 4
+259,FOODS_3_077,CA,A,stockout_risk,0.0,on hand falls to 297 (safety stock 614) by week 1; 0 units projected lost in weeks 1 to 4
+260,FOODS_3_233,TX,B,stockout_risk,0.0,on hand falls to 99 (safety stock 114) by week 4; 0 units projected lost in weeks 1 to 4
+261,FOODS_3_319,WI,B,stockout_risk,0.0,on hand falls to 133 (safety stock 141) by week 4; 0 units projected lost in weeks 1 to 4
+262,FOODS_3_077,WI,B,stockout_risk,0.0,on hand falls to 201 (safety stock 338) by week 1; 0 units projected lost in weeks 1 to 4
+263,FOODS_3_030,CA,B,stockout_risk,0.0,on hand falls to 169 (safety stock 177) by week 4; 0 units projected lost in weeks 1 to 4
+264,FOODS_3_064,WI,C,stockout_risk,0.0,on hand falls to 4 (safety stock 21) by week 4; 0 units projected lost in weeks 1 to 4
+265,FOODS_3_324,WI,A,stockout_risk,0.0,on hand falls to 196 (safety stock 267) by week 2; 0 units projected lost in weeks 1 to 4
+266,FOODS_3_281,CA,A,stockout_risk,0.0,on hand falls to 223 (safety stock 273) by week 4; 0 units projected lost in weeks 1 to 4
+267,FOODS_3_324,CA,A,stockout_risk,0.0,on hand falls to 152 (safety stock 211) by week 4; 0 units projected lost in weeks 1 to 4
+268,FOODS_3_690,CA,B,stockout_risk,0.0,on hand falls to 12 (safety stock 28) by week 2; 0 units projected lost in weeks 1 to 4
+269,FOODS_3_702,WI,A,stockout_risk,0.0,on hand falls to 126 (safety stock 142) by week 3; 0 units projected lost in weeks 1 to 4
+270,FOODS_3_690,WI,B,stockout_risk,0.0,on hand falls to 7 (safety stock 14) by week 4; 0 units projected lost in weeks 1 to 4
+271,FOODS_3_784,WI,C,stockout_risk,0.0,on hand falls to 14 (safety stock 24) by week 3; 0 units projected lost in weeks 1 to 4
+272,FOODS_3_504,CA,C,stockout_risk,0.0,on hand falls to 13 (safety stock 15) by week 4; 0 units projected lost in weeks 1 to 4
+273,FOODS_3_615,TX,C,stockout_risk,0.0,on hand falls to 9 (safety stock 9) by week 4; 0 units projected lost in weeks 1 to 4
+274,FOODS_3_504,TX,C,stockout_risk,0.0,on hand falls to 6 (safety stock 8) by week 4; 0 units projected lost in weeks 1 to 4
+275,FOODS_3_594,TX,C,stockout_risk,0.0,on hand falls to 25 (safety stock 36) by week 4; 0 units projected lost in weeks 1 to 4
+276,FOODS_3_573,TX,C,stockout_risk,0.0,on hand falls to 8 (safety stock 13) by week 4; 0 units projected lost in weeks 1 to 4
+277,FOODS_3_618,TX,C,stockout_risk,0.0,on hand falls to 2 (safety stock 53) by week 1; 0 units projected lost in weeks 1 to 4
+278,FOODS_3_618,CA,C,stockout_risk,0.0,on hand falls to 43 (safety stock 119) by week 1; 0 units projected lost in weeks 1 to 4
+279,FOODS_3_682,TX,A,stockout_risk,0.0,on hand falls to 107 (safety stock 127) by week 4; 0 units projected lost in weeks 1 to 4
+280,FOODS_3_329,TX,A,stockout_risk,0.0,on hand falls to 54 (safety stock 223) by week 2; 0 units projected lost in weeks 1 to 4
+281,FOODS_3_441,CA,B,stockout_risk,0.0,on hand falls to 64 (safety stock 152) by week 1; 0 units projected lost in weeks 1 to 4
+282,FOODS_3_430,TX,C,stockout_risk,0.0,on hand falls to 4 (safety stock 7) by week 4; 0 units projected lost in weeks 1 to 4
+283,FOODS_3_404,TX,B,stockout_risk,0.0,on hand falls to 145 (safety stock 153) by week 4; 0 units projected lost in weeks 1 to 4
+284,FOODS_3_362,WI,A,stockout_risk,0.0,on hand falls to 599 (safety stock 656) by week 1; 0 units projected lost in weeks 1 to 4
+285,FOODS_3_362,TX,A,stockout_risk,0.0,on hand falls to 515 (safety stock 552) by week 1; 0 units projected lost in weeks 1 to 4
+286,FOODS_3_329,WI,A,stockout_risk,0.0,on hand falls to 8 (safety stock 324) by week 4; 0 units projected lost in weeks 1 to 4
+287,FOODS_3_441,WI,B,stockout_risk,0.0,on hand falls to 51 (safety stock 140) by week 1; 0 units projected lost in weeks 1 to 4
+288,FOODS_3_441,TX,B,stockout_risk,0.0,on hand falls to 66 (safety stock 160) by week 1; 0 units projected lost in weeks 1 to 4

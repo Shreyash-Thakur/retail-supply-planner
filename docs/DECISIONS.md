@@ -179,3 +179,8 @@ Numbers (from `python run_all.py --stage simulate`, 200 runs, same demand paths 
 - Cycle service (series-weeks with no lost sales): 0.889, 0.898, 0.889; stockout weeks per series: 1.330, 1.226, 1.333. The two-tier LP is best on both: it spreads stockouts less widely, while fair share serves more units in total.
 - Lost sales value: 124,909, 112,162, 101,536; average inventory value 140,441, 137,478, 134,915.
 - By class, two-tier vs fair share: A 0.957 vs 0.958, B 0.923 vs 0.933, C 0.911 vs 0.944. The remaining gap is in B and C: within each tier the LP still allocates all or nothing by ABC weight, so lower classes wait. Fair share remains the better default here on fill rate and lost sales; the two-tier LP is the better choice when the measure is how many series and weeks run out.
+
+## Phase 9a and 9c: publishing app_data and deploying the dashboard
+What was built: `app_data/` (15 files, 2.8 MB, under the 25 MB target) is now committed, and `app/requirements.txt` lists only what the dashboard imports (streamlit, pandas, plotly, pyarrow) so Streamlit Community Cloud installs it without LightGBM, statsmodels or DuckDB. The README notes what the folder contains and credits the data source.
+Key decision: publish the derived results rather than deploy without data. Confirmed by the author on 2026-10-21, after being told the Kaggle rules page could not be read without a login and that a public copy of M5 on Zenodo (record 12636070) is labelled CC BY 4.0.
+Why: the dashboard reads only `app_data/`, so a deployed app needs those files in the repository. They hold derived results and weekly aggregates for 150 items, not the raw M5 files, and were checked for local paths and personal data before committing.
