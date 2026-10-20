@@ -17,8 +17,13 @@ flowchart LR
     backtest --> forecast[forecast<br/>12 weeks + quantiles]
     forecast --> inventory[inventory<br/>safety stock, reorder points]
     supply --> inventory
-    inventory --> simulate[simulate<br/>200 runs x scenarios, LP allocation]
-    simulate --> app_data[app_data<br/>dashboard files, RESULTS.md]
+    inventory --> elasticity[elasticity<br/>price response, stretch]
+    elasticity --> simulate[simulate<br/>200 runs x scenarios, LP allocation]
+    inventory --> simulate
+    simulate --> exceptions[exceptions<br/>ranked by value at risk, stretch]
+    backtest --> hierarchy[hierarchy<br/>bottom-up vs top-down, stretch]
+    exceptions --> app_data[app_data<br/>dashboard files, RESULTS.md]
+    hierarchy --> app_data
     app_data --> app[Streamlit dashboard]
 ```
 
@@ -46,12 +51,12 @@ Python 3.12.
 python -m venv .venv
 .venv/Scripts/activate            # Windows; on Linux or macOS: source .venv/bin/activate
 pip install -r requirements.txt
-python run_all.py --stage all     # about 3 minutes on a laptop (188 s measured)
+python run_all.py --stage all     # about 3 to 4 minutes on a laptop (198 s measured)
 streamlit run app/streamlit_app.py
 pytest -q
 ```
 
-Stages can be run one at a time, in order: `pipeline`, `supply`, `segment`, `backtest`, `forecast`, `inventory`, `simulate`, `app_data`. Each reads its inputs from `data/` and writes its outputs there. Every setting lives in `config.yaml`.
+Stages can be run one at a time, in order: `pipeline`, `supply`, `segment`, `backtest`, `forecast`, `inventory`, `elasticity`, `simulate`, `exceptions`, `hierarchy`, `app_data` (`elasticity`, `exceptions` and `hierarchy` are the stretch tier). Each reads its inputs from `data/` and writes its outputs there. Every setting lives in `config.yaml`.
 
 `app_data/` holds the small derived files the dashboard reads (segments, scores, forecasts, a 52-week history per series, policy and simulation results). It is derived from M5 data, so check the competition's data rules before publishing it; if in doubt, deploy without it and use screenshots instead. It is not committed to this repository.
 
@@ -72,6 +77,7 @@ Full tables, each with the command that produced it: [RESULTS.md](RESULTS.md). H
 - Baseline policy: 92.4% fill rate. Supplier capacity binds in 59% of item-weeks; with unlimited supply the same policy reaches 99.4%.
 - Fair-share allocation beats the LP on fill rate over 12 weeks (93.8% vs 92.4%), although the LP wins on its own weighted objective in a single constrained week. DECISIONS.md, Phase 8, explains why.
 - Recomputing reorder points after a 2-week lead time shock recovers 7.1 points of fill rate (79.4% to 86.5%).
+- Stretch: the exception list flags 310 issues on 226 series, ranked by value at risk; a 10% price cut on the 10 biggest items lowers revenue (only 4 of them have demand elastic enough to pay for it, and 40 of 108 item-level elasticity estimates have the wrong sign, a sign of confounding in observational prices); bottom-up forecasts beat top-down at every level, total included (WAPE 0.040 vs 0.102).
 
 ## Limitations
 
