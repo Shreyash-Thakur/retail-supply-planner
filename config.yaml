@@ -63,6 +63,11 @@ allocation:
   abc_weight: {A: 3.0, B: 2.0, C: 1.0}
   cover_basis: position
 
+exceptions:
+  stockout_weeks: 4
+  overstock_days: 60
+  bias_threshold: 0.20
+
 simulation:
   runs: 200
   horizon_weeks: 12

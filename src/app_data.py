@@ -51,6 +51,9 @@ def write_app_data(cfg: dict) -> dict:
         app / "segment_sets.csv", index=False)
     for name in ("backtest_scores.csv", "model_selection.csv", "allocation_demo.csv", "sim_kpis.csv", "feature_importance.csv"):
         pd.read_csv(out / name).to_csv(app / name, index=False)
+    for name in ("exceptions.csv",):  # stretch outputs: copied when their stage has run
+        if (out / name).exists():
+            pd.read_csv(out / name).to_csv(app / name, index=False)
 
     final_forecast = pd.read_parquet(out / "final_forecast.parquet")
     final_forecast.to_csv(app / "final_forecast.csv", index=False)

@@ -34,6 +34,9 @@ def load() -> dict:
     csv = {name: pd.read_csv(APP_DATA / f"{name}.csv") for name in (
         "segments", "segment_sets", "backtest_scores", "model_selection", "final_forecast", "history",
         "inventory_policy", "allocation_demo", "sim_kpis", "sim_weekly", "feature_importance")}
+    for optional in ("exceptions",):
+        path = APP_DATA / f"{optional}.csv"
+        csv[optional] = pd.read_csv(path) if path.exists() else None
     csv["backtest_forecasts"] = pd.read_parquet(APP_DATA / "backtest_forecasts.parquet")
     csv["meta"] = json.loads((APP_DATA / "meta.json").read_text(encoding="utf-8"))
     for name in ("final_forecast", "history"):
@@ -65,7 +68,7 @@ if not data:
     st.stop()
 
 meta = data["meta"]
-PAGES = ["Overview", "Segmentation", "Forecast accuracy", "Item explorer", "Inventory policy", "Allocation", "Scenarios"]
+PAGES = ["Overview", "Segmentation", "Forecast accuracy", "Item explorer", "Inventory policy", "Allocation", "Scenarios", "Exceptions"]
 requested = st.query_params.get("page", "Overview")  # deep link, for example ?page=Scenarios
 page = st.sidebar.radio("Page", PAGES, index=PAGES.index(requested) if requested in PAGES else 0)
 st.sidebar.caption(f"{meta['items']} items x {len(meta['dcs'])} DCs, {meta['weeks']} weeks of real M5 demand "
@@ -264,3 +267,25 @@ elif page == "Scenarios":
                                  mode="lines+markers", marker=dict(size=8)))
     st.plotly_chart(style(fig, 400, "fill rate").update_yaxes(tickformat=".0%").update_xaxes(title="week", dtick=1), width="stretch")
     st.caption("Lines are means across runs; shaded bands are the 10th to 90th percentile.")
+
+elif page == "Exceptions":
+    st.title("Planner exceptions")
+    exc = data["exceptions"]
+    if exc is None:
+        st.info("Run `python run_all.py --stage exceptions` and then `--stage app_data` to build the exception list.")
+        st.stop()
+    st.write("Series that need a planner's attention, ranked by value at risk (USD): stockout risk (projected on hand below "
+             "safety stock within 4 weeks, expected demand and baseline supply), overstock (more than 60 days of cover), forecast "
+             "bias beyond 20% over the last backtest fold, and a last week outside the range implied by past forecast errors.")
+    summary = exc.groupby("exception_type").agg(count=("rank", "size"), value_at_risk=("value_at_risk", "sum")).sort_values("value_at_risk")
+    fig = go.Figure(go.Bar(x=summary["value_at_risk"], y=summary.index, orientation="h", marker_color=SLOT[0],
+                           text=[f"{v:,.0f} ({c})" for v, c in zip(summary["value_at_risk"], summary["count"])], textposition="outside",
+                           hovertemplate="%{y}: %{x:,.0f} USD<extra></extra>"))
+    fig = style(fig, 260, None).update_xaxes(range=[0, 1.3 * summary["value_at_risk"].max()], title="value at risk (USD)")
+    st.plotly_chart(fig, width="stretch")
+    st.caption("Labels show value at risk and, in brackets, the number of exceptions.")
+    c1, c2 = st.columns(2)
+    types = c1.multiselect("Type", sorted(exc["exception_type"].unique()), default=sorted(exc["exception_type"].unique()))
+    abc = c2.multiselect("ABC", ["A", "B", "C"], default=["A", "B", "C"], key="exc_abc")
+    shown = exc[exc["exception_type"].isin(types) & exc["abc"].isin(abc)]
+    st.dataframe(shown.style.format({"value_at_risk": "{:,.0f}"}), hide_index=True)
