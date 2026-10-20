@@ -4,7 +4,7 @@ import argparse
 import logging
 from collections.abc import Callable
 
-from src import pipeline
+from src import pipeline, supply_params
 from src.config import load_config
 
 logger = logging.getLogger("run_all")
@@ -21,6 +21,7 @@ STAGE_ORDER = ["pipeline", "supply", "segment", "backtest", "forecast", "invento
 
 STAGES: dict[str, Callable[[dict], None]] = {name: _not_implemented(name) for name in STAGE_ORDER}
 STAGES["pipeline"] = pipeline.run
+STAGES["supply"] = supply_params.run
 
 
 def main() -> None:

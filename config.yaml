@@ -43,6 +43,7 @@ segment:
   window_weeks: 52
 
 supply:
+  history_weeks: 52
   lead_time_weeks_min: 1
   lead_time_weeks_max: 4
   supplier_capacity_factor: 1.10
