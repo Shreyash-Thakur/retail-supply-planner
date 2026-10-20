@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm
 
+from src.allocation import demo_constrained_week
 from src.errors import DataQualityError
 from src.supply_params import recent_launched_weeks
 
@@ -132,3 +133,16 @@ def run(cfg: dict) -> None:
     print(summary.round(2).to_string())
     print(f"  total safety stock: classic {policy['ss_classic'].sum():.0f}, quantile {policy['ss_quantile'].sum():.0f} units")
     print(f"  series with no positive forecast (days of cover undefined): {int(policy['days_of_cover'].isna().sum())}")
+
+    demo = demo_constrained_week(policy, supply, items, cfg)
+    demo.to_csv(paths["outputs_dir"] / "allocation_demo.csv", index=False)
+    s = demo.attrs["summary"]
+    print("\nAllocation demo: one constrained week (opening stock on hand, empty pipeline, "
+          f"supplier capacity x {cfg['scenarios']['supplier_disruption']['capacity_factor']})")
+    print(f"  requested {s['requested']} units, supply {s['supply']} units, {s['constrained_items']} items constrained")
+    by_abc = demo.groupby("abc")[["request", "lp", "fair_share"]].sum()
+    by_abc["lp_fill"] = by_abc["lp"] / by_abc["request"]
+    by_abc["fair_fill"] = by_abc["fair_share"] / by_abc["request"]
+    print("  " + by_abc.round(3).to_string().replace("\n", "\n  "))
+    print(f"  weighted shortfall: LP {s['lp_weighted_shortfall']:.0f}, fair share {s['fair_weighted_shortfall']:.0f} "
+          f"({1 - s['lp_weighted_shortfall'] / s['fair_weighted_shortfall']:.1%} lower with LP)")
