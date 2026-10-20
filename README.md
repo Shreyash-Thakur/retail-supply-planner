@@ -73,11 +73,11 @@ Every phase has an entry in [docs/DECISIONS.md](docs/DECISIONS.md) explaining wh
 
 Full tables, each with the command that produced it: [RESULTS.md](RESULTS.md). Headlines from the last run:
 
-- LightGBM is the most accurate model overall (WAPE 0.280, 8.9 points better than naive) and is chosen for smooth, erratic and lumpy series. For intermittent series the selection rule picks naive by 0.2 points of WAPE, and those series reach only 65% fill rate in the simulation.
-- Baseline policy: 92.4% fill rate. Supplier capacity binds in 59% of item-weeks; with unlimited supply the same policy reaches 99.4%.
-- Fair-share allocation beats the LP on fill rate over 12 weeks (93.8% vs 92.4%), although the LP wins on its own weighted objective in a single constrained week. DECISIONS.md, Phase 8, explains why.
-- Recomputing reorder points after a 2-week lead time shock recovers 7.1 points of fill rate (79.4% to 86.5%).
-- Stretch: the exception list flags 310 issues on 226 series, ranked by value at risk; a 10% price cut on the 10 biggest items lowers revenue (only 4 of them have demand elastic enough to pay for it, and 40 of 108 item-level elasticity estimates have the wrong sign, a sign of confounding in observational prices); bottom-up forecasts beat top-down at every level, total included (WAPE 0.040 vs 0.102).
+- LightGBM is the most accurate model overall (WAPE 0.280, 8.9 points better than naive) and is chosen for every pattern except inactive. For intermittent series it wins on the bias tie-break (amendment 9): the plain lowest-WAPE rule picked naive by 0.2 points, which under-forecast by 17% and cost those series a 65% fill rate.
+- Baseline policy: 93.7% fill rate. Supplier capacity binds in 59% of item-weeks; with unlimited supply the same policy reaches 99.4%.
+- Fair-share allocation beats the LP on fill rate over 12 weeks (95.2% vs 93.7%), although the LP wins on its own weighted objective in a single constrained week. DECISIONS.md, Phase 8, explains why.
+- Recomputing reorder points after a 2-week lead time shock recovers 7.9 points of fill rate (80.4% to 88.3%).
+- Stretch: the exception list flags 288 issues on 230 series, ranked by value at risk; a 10% price cut on the 10 biggest items lowers revenue (only 4 of them have demand elastic enough to pay for it, and 40 of 108 item-level elasticity estimates have the wrong sign, a sign of confounding in observational prices); bottom-up forecasts beat top-down at every level, total included (WAPE 0.049 vs 0.102).
 
 ## Limitations
 

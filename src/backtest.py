@@ -102,10 +102,11 @@ def score(forecasts: pd.DataFrame, scales: pd.DataFrame, by: str | None) -> pd.D
     return table
 
 
-def select_models(pattern_scores: pd.DataFrame, overall: pd.DataFrame) -> pd.DataFrame:
-    """Per pattern: lowest WAPE, tie-break by absolute bias. inactive always uses TSB.
+def select_models(pattern_scores: pd.DataFrame, overall: pd.DataFrame, margin_pp: float = 0.0) -> pd.DataFrame:
+    """Per pattern: among models within margin_pp WAPE points of the lowest WAPE, the lowest absolute bias.
 
-    A pattern with no scored series in any fold gets the overall best model.
+    margin_pp = 0 is the plain rule (lowest WAPE, ties broken by absolute bias). inactive always
+    uses TSB. A pattern with no scored series in any fold gets the overall best model.
     """
     best_overall = overall.assign(abs_bias=overall["bias"].abs()).sort_values(["wape", "abs_bias"]).iloc[0]["model"]
     rows = []
@@ -118,7 +119,12 @@ def select_models(pattern_scores: pd.DataFrame, overall: pd.DataFrame) -> pd.Dat
         elif len(g) == 0:
             chosen, rule = best_overall, "no backtest series with this pattern: overall best model"
         else:
-            chosen, rule = g.iloc[0]["model"], "lowest WAPE across all folds"
+            near = g[g["wape"] <= g["wape"].min() + margin_pp / 100 + 1e-12].sort_values(["abs_bias", "wape"])
+            chosen = near.iloc[0]["model"]
+            if chosen == g.iloc[0]["model"]:
+                rule = "lowest WAPE across all folds"
+            else:
+                rule = f"lowest absolute bias within {margin_pp:g} WAPE points of the best"
         row |= {"model": chosen, "rule": rule}
         best = g[g["model"] == chosen]
         if len(best):
@@ -167,7 +173,7 @@ def run(cfg: dict) -> None:
     scores = pd.concat([overall, by_pattern, by_abc], ignore_index=True)
     scores.to_csv(out / "backtest_scores.csv", index=False)
 
-    selection = select_models(by_pattern, overall)
+    selection = select_models(by_pattern, overall, cfg["forecast"]["selection_wape_margin_pp"])
     selection.to_csv(out / "model_selection.csv", index=False)
     final_segments = segments[segments["segment_set"] == "final"]
     residuals = chosen_residuals(forecasts, selection, final_segments)

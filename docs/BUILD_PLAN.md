@@ -13,6 +13,7 @@ Repository name: `retail-supply-planner`
 6. `Errors and their fixes/` is gitignored (local notes only).
 7. Multi-agent work is allowed only within a phase for independent tasks. Phases still run in order, with acceptance checks and pytest before each commit.
 8. Nothing is pushed to GitHub until the whole project is done.
+9. Model selection margin (agreed after the first full run): per pattern, among models within `forecast.selection_wape_margin_pp` (1.0) WAPE points of the lowest WAPE, choose the lowest absolute bias. With a margin of 0 this is the original rule. Reason: the original rule chose naive for intermittent series by 0.2 points while it under-forecast by 17%, which left 21 series with a zero forecast and those series at 65% fill rate.
 
 ---
 
