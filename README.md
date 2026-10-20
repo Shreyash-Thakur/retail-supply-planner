@@ -51,7 +51,7 @@ Python 3.12.
 python -m venv .venv
 .venv/Scripts/activate            # Windows; on Linux or macOS: source .venv/bin/activate
 pip install -r requirements.txt
-python run_all.py --stage all     # about 3 to 4 minutes on a laptop (198 s measured)
+python run_all.py --stage all     # about 3 to 5 minutes on a laptop (268 s on the last full run)
 streamlit run app/streamlit_app.py
 pytest -q
 ```
