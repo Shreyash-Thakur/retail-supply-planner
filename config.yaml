@@ -57,6 +57,7 @@ supply:
 inventory:
   service_level_by_abc: {A: 0.98, B: 0.95, C: 0.90}
   min_error_points: 6
+  safety_stock_method: classic
 
 allocation:
   abc_weight: {A: 3.0, B: 2.0, C: 1.0}

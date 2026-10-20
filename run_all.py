@@ -4,7 +4,7 @@ import argparse
 import logging
 from collections.abc import Callable
 
-from src import backtest, pipeline, segment, supply_params
+from src import backtest, final_forecast, inventory, pipeline, segment, supply_params
 from src.config import load_config
 
 logger = logging.getLogger("run_all")
@@ -24,6 +24,8 @@ STAGES["pipeline"] = pipeline.run
 STAGES["supply"] = supply_params.run
 STAGES["segment"] = segment.run
 STAGES["backtest"] = backtest.run
+STAGES["forecast"] = final_forecast.run
+STAGES["inventory"] = inventory.run
 
 
 def main() -> None:
