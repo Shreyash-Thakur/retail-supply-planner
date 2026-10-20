@@ -57,19 +57,37 @@ def allocate_fair_share(requests: np.ndarray, supply: np.ndarray, dc_free_capaci
     return _round_allocation(x, requests.astype(np.int64), np.asarray(supply), np.asarray(dc_free_capacity), weights)
 
 
+def _greedy_by_item(requests: np.ndarray, supply: np.ndarray, weights: np.ndarray) -> np.ndarray:
+    """Each item fills its DCs in descending weight order until its supply runs out.
+
+    Exact LP optimum when no DC capacity binds: the problem then separates by item
+    into max sum w x, sum x <= supply, 0 <= x <= request, whose optimum is greedy by weight.
+    """
+    order = np.argsort(-weights, axis=1, kind="stable")
+    r_sorted = np.take_along_axis(requests, order, axis=1)
+    before = np.cumsum(r_sorted, axis=1) - r_sorted
+    x_sorted = np.clip(supply[:, None] - before, 0, r_sorted)
+    alloc = np.empty_like(requests)
+    np.put_along_axis(alloc, order, x_sorted, axis=1)
+    return alloc
+
+
 def allocate_lp(requests: np.ndarray, supply: np.ndarray, dc_free_capacity: np.ndarray, weights: np.ndarray) -> np.ndarray:
     """Maximise sum w x subject to x <= request, item supply and DC free capacity (scipy HiGHS).
 
-    When nothing binds (every item's supply and every DC's room cover the requests),
-    filling every request is optimal because all weights are positive, so the LP is skipped.
-    On solver failure, falls back to fair share for that week.
+    When no DC capacity binds, the exact per-item greedy solution is used instead of
+    the solver (same optimum, much faster). On solver failure, falls back to fair
+    share for that week.
     """
     requests = np.asarray(requests, dtype=np.int64)
     supply = np.asarray(supply, dtype=np.int64)
     dc_free = np.maximum(np.asarray(dc_free_capacity, dtype=np.int64), 0)
-    if (requests.sum(axis=1) <= supply).all() and (requests.sum(axis=0) <= dc_free).all():
-        return requests.copy()
+    if (requests.sum(axis=0) <= dc_free).all():
+        return _greedy_by_item(requests, supply, weights)
+    return _solve_lp(requests, supply, dc_free, weights)
 
+
+def _solve_lp(requests: np.ndarray, supply: np.ndarray, dc_free: np.ndarray, weights: np.ndarray) -> np.ndarray:
     n_items, n_dcs = requests.shape
     item_rows = np.kron(np.eye(n_items), np.ones(n_dcs))
     dc_rows = np.tile(np.eye(n_dcs), n_items)

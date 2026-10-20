@@ -1,7 +1,14 @@
 import numpy as np
 import pytest
 
-from src.allocation import allocate_fair_share, allocate_lp, allocation_weights, weighted_shortfall
+from src.allocation import (
+    _greedy_by_item,
+    _solve_lp,
+    allocate_fair_share,
+    allocate_lp,
+    allocation_weights,
+    weighted_shortfall,
+)
 
 METHODS = [
     lambda r, s, c, w: allocate_lp(r, s, c, w),
@@ -78,3 +85,15 @@ def test_lp_never_worse_than_fair_share_on_random_cases():
         lp = allocate_lp(requests, supply, dc_free, weights)
         fair = allocate_fair_share(requests, supply, dc_free, weights)
         assert weighted_shortfall(requests, lp, weights) <= weighted_shortfall(requests, fair, weights) + 1e-6
+
+
+def test_greedy_shortcut_matches_lp_when_dc_capacity_does_not_bind():
+    rng = np.random.default_rng(3)
+    for _ in range(50):
+        requests = rng.integers(0, 40, size=(10, 3))
+        supply = rng.integers(0, 90, size=10)
+        dc_free = requests.sum(axis=0) + 5  # DC capacity slack
+        weights = rng.uniform(1, 6, size=(10, 3))
+        greedy = _greedy_by_item(requests, supply, weights)
+        lp = _solve_lp(requests, supply, dc_free, weights)
+        assert np.sum(weights * greedy) == pytest.approx(np.sum(weights * lp), rel=1e-9)
