@@ -170,6 +170,15 @@ def write_results(cfg: dict, meta: dict) -> str:
     parts += ["Fill rate by group (model_naive and model_lightgbm group series by their chosen forecasting model):", "", _md_table(fill_groups), ""]
     binding = pd.read_csv(out / "sim_supply_binding.csv").set_index("scenario").reindex(SCENARIO_ORDER).reset_index()
     parts += ["Share of item-weeks in which DC requests exceeded the item's supplier capacity:", "", _md_table(binding), ""]
+    if (out / "exceptions.csv").exists():
+        exc = pd.read_csv(out / "exceptions.csv")
+        summary = exc.groupby("exception_type").agg(count=("rank", "size"), value_at_risk=("value_at_risk", "sum")).reset_index()
+        summary["value_at_risk"] = summary["value_at_risk"].round(0).astype("int64")
+        top = exc.head(10)[["rank", "item_id", "dc_id", "abc", "exception_type", "value_at_risk", "detail"]].copy()
+        top["value_at_risk"] = top["value_at_risk"].round(0).astype("int64")
+        parts += ["## Planner exceptions (stretch)", "", "Command: `python run_all.py --stage exceptions`", "", _md_table(summary), "",
+                  f"Series with at least one exception: {exc[SERIES_KEYS].drop_duplicates().shape[0]}. Top 10 by value at risk (USD):", "",
+                  _md_table(top), ""]
     text = "\n".join(parts)
     (PROJECT_ROOT / "RESULTS.md").write_text(text, encoding="utf-8")
     return text

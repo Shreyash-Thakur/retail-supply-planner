@@ -127,3 +127,14 @@ Key decisions:
 - Pages accept a `?page=` link (for example `?page=Scenarios`) for sharing and for screenshots.
 Why: the dashboard is how a planner or interviewer meets the work, so it shows the same numbers as RESULTS.md, explains the counter-intuitive findings (fair share beating the LP, naive on intermittent series) where they appear, and says plainly which inputs are simulated.
 Numbers: `python run_all.py --stage all` from scratch: 188 s, exit 0. App: every page renders without errors and the first page loads in 1.2 s. `pytest -q`: 72 passed.
+
+## Phase 10 (stretch): Planner exceptions
+What was built: an `exceptions` stage (between `simulate` and `app_data`) that lists every series needing attention, ranked by value at risk, with an Exceptions page in the dashboard. Four checks: stockout risk, overstock, forecast bias and demand anomaly; thresholds live in config (`exceptions` section).
+Key decisions:
+- Stockout risk uses a deterministic projection: the simulation's own weekly loop run once with expected demand (no noise), baseline supplier capacity and LP allocation, so the projection obeys exactly the same rules as the Monte Carlo runs. Flagged when projected on hand falls below safety stock in weeks 1 to 4; value at risk = projected lost units in those weeks x price.
+- Overstock: days of cover above 60; excess = opening stock minus 60 days of forecast demand, valued at unit cost. A series holding stock with a zero forecast has unlimited cover and is flagged too.
+- Forecast bias: the chosen model's bias over the last backtest fold beyond plus or minus 20%; value at risk = the absolute 12-week bias in units x price (the spec gives no value for this type, and this puts it in the same currency as the others).
+- Demand anomaly: the last actual week compared with the last fold's forecast for that week plus the 5th and 95th percentiles of the series' backtest residuals; value at risk = the distance outside that range x price.
+Why: a planner cannot review 450 series every week. Ranking by money at risk puts the few that matter first, and each row says why it was flagged.
+Numbers (from `python run_all.py --stage exceptions`): 310 exceptions on 226 of 450 series. Forecast bias 180 (value at risk 216,611; 91 over-forecast, 89 under-forecast), stockout risk 58 (27,322), overstock 23 (4,412), demand anomaly 49 (2,207). The list independently surfaces the intermittent-naive problem from Phase 5: 21 of the 23 overstock flags are series whose naive forecast is zero, and naive series account for 31 of the 58 stockout risks although they are 61 of 450 series. The second-ranked exception is FOODS_3_444 in WI: forecast zero, projected to run out in week 1, 1,748 units lost in weeks 1 to 4.
+Process note: the first Phase 10 commit (7173c9e) went in without this entry and the RESULTS.md block, because a scripted edit failed and the commit step still ran; both were added in the following commit rather than by rewriting history.

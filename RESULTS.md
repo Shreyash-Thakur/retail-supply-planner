@@ -152,3 +152,29 @@ Share of item-weeks in which DC requests exceeded the item's supplier capacity:
 | lead_time_shock_policy_updated | 0.789 |
 | flat_service_level | 0.607 |
 | diagnostic_unlimited_supply | 0.000 |
+
+## Planner exceptions (stretch)
+
+Command: `python run_all.py --stage exceptions`
+
+| exception_type | count | value_at_risk |
+|---|---|---|
+| demand_anomaly | 49 | 2,207 |
+| forecast_bias | 180 | 216,611 |
+| overstock | 23 | 4,412 |
+| stockout_risk | 58 | 27,322 |
+
+Series with at least one exception: 226. Top 10 by value at risk (USD):
+
+| rank | item_id | dc_id | abc | exception_type | value_at_risk | detail |
+|---|---|---|---|---|---|---|
+| 1 | FOODS_3_120 | CA | A | forecast_bias | 15,843 | bias +35% over the last fold (12289 forecast vs 9108 actual) |
+| 2 | FOODS_3_444 | WI | A | stockout_risk | 12,201 | on hand falls to 0 (safety stock 324) by week 1; 1748 units projected lost in weeks 1 to 4 |
+| 3 | FOODS_3_444 | TX | A | stockout_risk | 8,962 | on hand falls to 0 (safety stock 413) by week 1; 1284 units projected lost in weeks 1 to 4 |
+| 4 | FOODS_3_444 | WI | A | forecast_bias | 8,341 | bias -100% over the last fold (0 forecast vs 1195 actual) |
+| 5 | FOODS_3_444 | TX | A | forecast_bias | 7,971 | bias -100% over the last fold (0 forecast vs 1142 actual) |
+| 6 | FOODS_3_120 | WI | A | forecast_bias | 7,834 | bias +38% over the last fold (5740 forecast vs 4167 actual) |
+| 7 | FOODS_3_090 | CA | A | forecast_bias | 6,348 | bias -21% over the last fold (16296 forecast vs 20585 actual) |
+| 8 | FOODS_3_362 | WI | A | forecast_bias | 6,215 | bias -100% over the last fold (0 forecast vs 2486 actual) |
+| 9 | FOODS_3_362 | TX | A | forecast_bias | 5,352 | bias -100% over the last fold (0 forecast vs 2141 actual) |
+| 10 | FOODS_3_499 | CA | A | forecast_bias | 4,705 | bias +44% over the last fold (6146 forecast vs 4264 actual) |
