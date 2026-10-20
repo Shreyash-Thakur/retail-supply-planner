@@ -4,7 +4,7 @@ import argparse
 import logging
 from collections.abc import Callable
 
-from src import pipeline, segment, supply_params
+from src import backtest, pipeline, segment, supply_params
 from src.config import load_config
 
 logger = logging.getLogger("run_all")
@@ -23,6 +23,7 @@ STAGES: dict[str, Callable[[dict], None]] = {name: _not_implemented(name) for na
 STAGES["pipeline"] = pipeline.run
 STAGES["supply"] = supply_params.run
 STAGES["segment"] = segment.run
+STAGES["backtest"] = backtest.run
 
 
 def main() -> None:
