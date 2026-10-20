@@ -194,6 +194,13 @@ def write_results(cfg: dict, meta: dict) -> str:
         parts += ["## Price elasticity and price cut (stretch)", "", "Command: `python run_all.py --stage elasticity` and "
                   "`python run_all.py --stage simulate` (scenarios price_cut_policy_not_updated and price_cut_policy_updated above)", "",
                   _md_table(stats), ""]
+    if (out / "hierarchy_scores.csv").exists():
+        h = pd.read_csv(out / "hierarchy_scores.csv")
+        table_h = h.pivot(index="level", columns="method", values="wape").reindex(["item_dc", "item", "dc", "total"]).reset_index()
+        models = pd.read_csv(out / "hierarchy_total_models.csv")
+        parts += ["## Hierarchical consistency (stretch, last backtest fold)", "", "Command: `python run_all.py --stage hierarchy`", "",
+                  "WAPE by level (forecasts summed to each level before scoring):", "", _md_table(table_h), "",
+                  "Model for the total series in top-down, chosen on the earlier folds only:", "", _md_table(models), ""]
     text = "\n".join(parts)
     (PROJECT_ROOT / "RESULTS.md").write_text(text, encoding="utf-8")
     return text

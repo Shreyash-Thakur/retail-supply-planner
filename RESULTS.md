@@ -198,3 +198,27 @@ Command: `python run_all.py --stage elasticity` and `python run_all.py --stage s
 | Raw estimates with a positive sign (flagged) | 40 |
 | Positive with a time trend added (sensitivity only) | 43 |
 | Final elasticity median / mean | -0.111 / -0.829 |
+
+## Hierarchical consistency (stretch, last backtest fold)
+
+Command: `python run_all.py --stage hierarchy`
+
+WAPE by level (forecasts summed to each level before scoring):
+
+| level | bottom_up | top_down |
+|---|---|---|
+| item_dc | 0.258 | 0.316 |
+| item | 0.207 | 0.274 |
+| dc | 0.055 | 0.105 |
+| total | 0.040 | 0.102 |
+
+Model for the total series in top-down, chosen on the earlier folds only:
+
+| model | wape | bias |
+|---|---|---|
+| seasonal_naive | 0.057 | -0.006 |
+| moving_average_4 | 0.089 | 0.014 |
+| holt_winters | 0.096 | -0.056 |
+| croston | 0.099 | 0.062 |
+| tsb | 0.099 | 0.062 |
+| naive | 0.154 | 0.009 |
