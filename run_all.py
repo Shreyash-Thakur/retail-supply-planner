@@ -4,7 +4,7 @@ import argparse
 import logging
 from collections.abc import Callable
 
-from src import backtest, final_forecast, inventory, pipeline, segment, simulate, supply_params
+from src import app_data, backtest, final_forecast, inventory, pipeline, segment, simulate, supply_params
 from src.config import load_config
 
 logger = logging.getLogger("run_all")
@@ -27,6 +27,7 @@ STAGES["backtest"] = backtest.run
 STAGES["forecast"] = final_forecast.run
 STAGES["inventory"] = inventory.run
 STAGES["simulate"] = simulate.run
+STAGES["app_data"] = app_data.run
 
 
 def main() -> None:

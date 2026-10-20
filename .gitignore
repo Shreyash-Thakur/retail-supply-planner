@@ -7,3 +7,5 @@ kaggle.json
 .env
 .streamlit/secrets.toml
 Errors and their fixes/
+# app_data/ holds derived M5 results. Not committed until the author confirms the M5 data rules (Phase 9a).
+app_data/

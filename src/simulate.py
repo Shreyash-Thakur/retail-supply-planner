@@ -312,6 +312,8 @@ def run(cfg: dict) -> None:
     kpis = pd.concat(kpi_frames, ignore_index=True)[["scenario", "group", "kpi", "mean", "p10", "p90"]]
     kpis.to_csv(out_dir / "sim_kpis.csv", index=False)
     pd.concat(weekly_frames, ignore_index=True).to_parquet(out_dir / "sim_weekly.parquet", index=False)
+    pd.DataFrame({"scenario": list(supply_binding), "share_item_weeks_supply_binding": list(supply_binding.values())}).to_csv(
+        out_dir / "sim_supply_binding.csv", index=False)
 
     pd.set_option("display.width", 220)
     overall = kpis[kpis["group"] == "All"].pivot(index="scenario", columns="kpi", values="mean")[KPIS]
